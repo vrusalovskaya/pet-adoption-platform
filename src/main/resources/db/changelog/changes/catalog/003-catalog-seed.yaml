@@ -1,0 +1,85 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 003-catalog-seed
+      author: victoria
+
+      changes:
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+
+              - column:
+                  name: name
+                  value: Happy Tails Shelter
+
+              - column:
+                  name: city
+                  value: Warsaw
+
+              - column:
+                  name: address
+                  value: Marszalkowska 10
+
+              - column:
+                  name: contact_email
+                  value: contact@happytails.com
+
+              - column:
+                  name: verified
+                  valueBoolean: true
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 1
+
+              - column:
+                  name: name
+                  value: Luna
+
+              - column:
+                  name: species
+                  value: DOG
+
+              - column:
+                  name: breed
+                  value: Labrador
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2021
+
+              - column:
+                  name: gender
+                  value: FEMALE
+
+              - column:
+                  name: description
+                  value: Friendly and energetic dog
+
+              - column:
+                  name: status
+                  value: AVAILABLE
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP

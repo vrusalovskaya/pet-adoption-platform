@@ -1,0 +1,80 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 001-adoption-requests-table
+      author: victoria
+
+      changes:
+
+        - createTable:
+            schemaName: adoption
+            tableName: adoption_requests
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: animal_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: applicant_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: decision_comment
+                  type: TEXT
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            schemaName: adoption
+            tableName: adoption_requests
+            indexName: idx_adoption_applications_animal_id
+
+            columns:
+              - column:
+                  name: animal_id
+
+        - createIndex:
+            schemaName: adoption
+            tableName: adoption_requests
+            indexName: idx_adoption_applications_applicant_id
+
+            columns:
+              - column:
+                  name: applicant_id

@@ -1,10 +1,10 @@
-package com.wise.pet_adoption_platform;
+package com.wise.petadoption;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PetAdoptionPlatformApplicationTests {
+class PetAdoptionApplicationTests {
 
 	@Test
 	void contextLoads() {

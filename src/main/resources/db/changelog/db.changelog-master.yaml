@@ -1,0 +1,25 @@
+databaseChangeLog:
+
+  - include:
+      file: classpath:db/changelog/changes/common/000-create-schemas.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/users/001-users-table.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/users/002-users-seed-admin.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/catalog/001-catalog-shelters-table.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/catalog/002-catalog-animals-table.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/catalog/003-catalog-seed.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/adoption/001-adoption-requests-table.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/adoption/002-adoption-seed.yaml
