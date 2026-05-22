@@ -1,4 +1,4 @@
-package com.wise.petadoption.shelter;
+package com.wise.petadoption.shelter.persistence;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,6 +39,6 @@ public class ShelterEntity {
     @Column(nullable = false)
     private boolean verified;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, insertable = false)
     private LocalDateTime createdAt;
 }

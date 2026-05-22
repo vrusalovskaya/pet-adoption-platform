@@ -19,6 +19,9 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/catalog/003-catalog-seed.yaml
 
   - include:
+      file: classpath:db/changelog/changes/catalog/004-catalog-additional-shelters-seed.yaml
+
+  - include:
       file: classpath:db/changelog/changes/adoption/001-adoption-requests-table.yaml
 
   - include:

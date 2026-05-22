@@ -1,6 +1,6 @@
 package com.wise.petadoption.animal;
 
-import com.wise.petadoption.shelter.ShelterEntity;
+import com.wise.petadoption.shelter.persistence.ShelterEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
