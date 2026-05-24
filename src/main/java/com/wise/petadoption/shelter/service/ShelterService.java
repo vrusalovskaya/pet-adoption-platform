@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface ShelterService {
     Page<Shelter> getAll(String city, Boolean verified, Pageable pageable);
 
-    Shelter getById(long id);
+    Shelter get(long id);
 
     Shelter create(ModifyShelterCommand shelter);
 

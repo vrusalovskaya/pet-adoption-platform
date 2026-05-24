@@ -22,7 +22,7 @@ public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
     private final ShelterMapper shelterMapper;
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -36,7 +36,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     @Transactional(readOnly = true)
-    public Shelter getById(long id) {
+    public Shelter get(long id) {
         ShelterEntity shelterEntity = getEntityById(id);
         return shelterMapper.toModel(shelterEntity);
     }
@@ -70,9 +70,7 @@ public class ShelterServiceImpl implements ShelterService {
     @Transactional
     public Shelter verify(Long id) {
         ShelterEntity loadedEntity = getEntityById(id);
-
         loadedEntity.setVerified(true);
-
         return shelterMapper.toModel(loadedEntity);
     }
 

@@ -1,0 +1,17 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 003-adoption-reset-sequence
+      author: victoria
+
+      changes:
+
+        - sql:
+            sql: |
+              SELECT setval(
+                  'adoption.adoption_requests_id_seq',
+                  (
+                      SELECT COALESCE(MAX(id), 1)
+                      FROM adoption.adoption_requests
+                  )
+              );

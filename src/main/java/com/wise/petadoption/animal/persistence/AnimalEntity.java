@@ -1,5 +1,8 @@
-package com.wise.petadoption.animal;
+package com.wise.petadoption.animal.persistence;
 
+import com.wise.petadoption.animal.common.AnimalStatus;
+import com.wise.petadoption.animal.common.Gender;
+import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.shelter.persistence.ShelterEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,6 +53,6 @@ public class AnimalEntity {
     @Embedded
     private PhotoMetadata photoMetadata;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, insertable = false)
     private LocalDateTime createdAt;
 }

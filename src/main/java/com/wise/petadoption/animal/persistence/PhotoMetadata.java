@@ -1,4 +1,4 @@
-package com.wise.petadoption.animal;
+package com.wise.petadoption.animal.persistence;
 
 import com.wise.petadoption.shared.StorageType;
 import jakarta.persistence.Column;

@@ -10,6 +10,9 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/users/002-users-seed-admin.yaml
 
   - include:
+      file: classpath:db/changelog/changes/users/003-users-reset-sequence.yaml
+
+  - include:
       file: classpath:db/changelog/changes/catalog/001-catalog-shelters-table.yaml
 
   - include:
@@ -22,7 +25,13 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/catalog/004-catalog-additional-shelters-seed.yaml
 
   - include:
+      file: classpath:db/changelog/changes/catalog/005-catalog-reset-sequences.yaml
+
+  - include:
       file: classpath:db/changelog/changes/adoption/001-adoption-requests-table.yaml
 
   - include:
       file: classpath:db/changelog/changes/adoption/002-adoption-seed.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/adoption/003-adoption-reset-sequence.yaml

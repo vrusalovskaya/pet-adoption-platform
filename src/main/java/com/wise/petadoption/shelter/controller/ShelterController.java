@@ -40,7 +40,7 @@ public class ShelterController {
 
     @GetMapping("/{id}")
     public ShelterResponse get(@PathVariable Long id) {
-        Shelter shelter = shelterService.getById(id);
+        Shelter shelter = shelterService.get(id);
         return shelterMapper.toResponse(shelter);
     }
 

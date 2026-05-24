@@ -58,6 +58,7 @@ databaseChangeLog:
               - column:
                   name: status
                   type: VARCHAR(20)
+                  defaultValue: AVAILABLE
                   constraints:
                     nullable: false
 
