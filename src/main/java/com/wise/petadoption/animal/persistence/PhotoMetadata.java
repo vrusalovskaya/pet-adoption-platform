@@ -1,6 +1,6 @@
 package com.wise.petadoption.animal.persistence;
 
-import com.wise.petadoption.shared.StorageType;
+import com.wise.petadoption.shared.storage.model.StorageType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

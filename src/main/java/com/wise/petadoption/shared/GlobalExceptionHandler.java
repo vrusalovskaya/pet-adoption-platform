@@ -1,21 +1,24 @@
 package com.wise.petadoption.shared;
 
-import com.wise.petadoption.shelter.exception.ShelterNotFoundException;
+import com.wise.petadoption.animal.exception.AnimalPhotoException;
+import com.wise.petadoption.shared.storage.exception.ImageStorageException;
+import com.wise.petadoption.shared.storage.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.Instant;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ShelterNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleShelterNotFound(
-            ShelterNotFoundException ex,
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNotFound(
+            NotFoundException ex,
             HttpServletRequest request
     ) {
         ApiErrorResponse response = new ApiErrorResponse(
@@ -35,14 +38,13 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException ex,
             HttpServletRequest request
     ) {
-        String message;
-        Throwable cause = ex.getCause();
-
-        if (cause != null) {
-            message = cause.getMessage();
-        } else {
-            message = "Invalid request parameter";
-        }
+        String message = ex.getCause() != null
+                ? ex.getCause().getMessage()
+                : String.format(
+                "Invalid value '%s' for parameter '%s'",
+                ex.getValue(),
+                ex.getName()
+        );
 
         ApiErrorResponse response = new ApiErrorResponse(
                 Instant.now(),
@@ -53,5 +55,38 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler({AnimalPhotoException.class, ImageStorageException.class})
+    public ResponseEntity<ApiErrorResponse> handleImageStorage(
+            ImageStorageException ex,
+            HttpServletRequest request
+    ) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                Instant.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
+            HttpServletRequest request
+    ) {
+        ApiErrorResponse response = new ApiErrorResponse(
+                Instant.now(),
+                HttpStatus.CONTENT_TOO_LARGE.value(),
+                HttpStatus.CONTENT_TOO_LARGE.getReasonPhrase(),
+                "Uploaded file exceeds the maximum allowed size",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE)
+                .body(response);
     }
 }

@@ -27,6 +27,7 @@ public class AnimalServiceImpl implements AnimalService {
 
     private final AnimalRepository animalRepository;
     private final ShelterRepository shelterRepository;
+    private final AnimalPhotoService animalPhotoService;
     private final AnimalEntityMapper entityMapper;
     @PersistenceContext
     private EntityManager entityManager;
@@ -91,6 +92,9 @@ public class AnimalServiceImpl implements AnimalService {
     @Transactional
     public void delete(Long id) {
         AnimalEntity loadedEntity = getEntityById(id);
+        if (loadedEntity.getPhotoMetadata() != null) {
+            animalPhotoService.delete(id);
+        }
         animalRepository.delete(loadedEntity);
     }
 

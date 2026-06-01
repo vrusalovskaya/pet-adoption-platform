@@ -1,6 +1,6 @@
 package com.wise.petadoption.animal.api;
 
-import com.wise.petadoption.shared.StorageType;
+import com.wise.petadoption.shared.storage.model.StorageType;
 
 public record PhotoMetadataResponse(
         String photoFileId,

@@ -1,6 +1,6 @@
 package com.wise.petadoption.animal.domain;
 
-import com.wise.petadoption.shared.StorageType;
+import com.wise.petadoption.shared.storage.model.StorageType;
 
 public record PhotoMetadataModel(
         String photoFileId,

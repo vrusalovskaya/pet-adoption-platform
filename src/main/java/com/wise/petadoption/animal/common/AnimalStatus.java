@@ -4,5 +4,5 @@ public enum AnimalStatus {
     AVAILABLE,
     RESERVED,
     ADOPTED,
-    WITHDRAWN;
+    WITHDRAWN
 }
