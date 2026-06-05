@@ -1,6 +1,6 @@
 package com.wise.petadoption.animal.exception;
 
-import com.wise.petadoption.shared.storage.exception.NotFoundException;
+import com.wise.petadoption.shared.exception.NotFoundException;
 
 public class AnimalPhotoNotFoundException extends NotFoundException {
     public AnimalPhotoNotFoundException(Long animalId) {

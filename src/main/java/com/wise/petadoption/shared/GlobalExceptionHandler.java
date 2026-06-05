@@ -2,7 +2,7 @@ package com.wise.petadoption.shared;
 
 import com.wise.petadoption.animal.exception.AnimalPhotoException;
 import com.wise.petadoption.shared.storage.exception.ImageStorageException;
-import com.wise.petadoption.shared.storage.exception.NotFoundException;
+import com.wise.petadoption.shared.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -8,7 +8,7 @@ import com.wise.petadoption.animal.persistence.AnimalRepository;
 import com.wise.petadoption.animal.persistence.PhotoMetadata;
 import com.wise.petadoption.shared.storage.model.StoredImage;
 import com.wise.petadoption.shared.storage.model.StoredImageStream;
-import com.wise.petadoption.shared.storage.service.ImageStorage;
+import com.wise.petadoption.shared.storage.contract.ImageStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

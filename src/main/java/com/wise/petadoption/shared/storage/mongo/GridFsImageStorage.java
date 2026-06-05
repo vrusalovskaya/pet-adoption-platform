@@ -6,10 +6,11 @@ import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.shared.storage.model.StorageType;
 import com.wise.petadoption.shared.storage.model.StoredImage;
 import com.wise.petadoption.shared.storage.model.StoredImageStream;
-import com.wise.petadoption.shared.storage.service.ImageStorage;
+import com.wise.petadoption.shared.storage.contract.ImageStorage;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
@@ -22,6 +23,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Component
+@Conditional(MongoStorageCondition.class)
 @RequiredArgsConstructor
 public class GridFsImageStorage implements ImageStorage {
 

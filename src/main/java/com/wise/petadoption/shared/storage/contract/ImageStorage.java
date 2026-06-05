@@ -1,4 +1,4 @@
-package com.wise.petadoption.shared.storage.service;
+package com.wise.petadoption.shared.storage.contract;
 
 import com.wise.petadoption.shared.storage.model.StorageType;
 import com.wise.petadoption.shared.storage.model.StoredImage;
