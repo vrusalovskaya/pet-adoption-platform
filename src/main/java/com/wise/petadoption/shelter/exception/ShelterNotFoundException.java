@@ -1,5 +1,6 @@
 package com.wise.petadoption.shelter.exception;
 
+
 import com.wise.petadoption.shared.exception.NotFoundException;
 
 public class ShelterNotFoundException extends NotFoundException {

@@ -38,6 +38,6 @@ public class UserEntity {
     @Column(length = 20, nullable = false)
     private Role role;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, insertable = false)
     private LocalDateTime createdAt;
 }

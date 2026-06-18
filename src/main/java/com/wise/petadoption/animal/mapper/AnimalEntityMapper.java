@@ -10,6 +10,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AnimalEntityMapper {
 
+    @Mapping(target = "shelterEntity.id", source = "shelterId")
     AnimalEntity toEntity(ModifyAnimalCommand command);
 
     @Mapping(target = "shelterId", source = "shelterEntity.id")
