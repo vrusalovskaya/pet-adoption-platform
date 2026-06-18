@@ -4,6 +4,7 @@ import com.wise.petadoption.animal.exception.AnimalPhotoException;
 import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.shared.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,16 +22,11 @@ public class GlobalExceptionHandler {
             NotFoundException ex,
             HttpServletRequest request
     ) {
-        ApiErrorResponse response = new ApiErrorResponse(
-                Instant.now(),
-                HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
                 ex.getMessage(),
-                request.getRequestURI()
+                request
         );
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(response);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -46,47 +42,89 @@ public class GlobalExceptionHandler {
                 ex.getName()
         );
 
-        ApiErrorResponse response = new ApiErrorResponse(
-                Instant.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
                 message,
-                request.getRequestURI()
+                request
         );
-
-        return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler({AnimalPhotoException.class, ImageStorageException.class})
-    public ResponseEntity<ApiErrorResponse> handleImageStorage(
-            ImageStorageException ex,
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(
+            IllegalArgumentException ex,
             HttpServletRequest request
     ) {
-        ApiErrorResponse response = new ApiErrorResponse(
-                Instant.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage(),
-                request.getRequestURI()
+                request
         );
+    }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(response);
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                "The resource already exists or violates a database constraint",
+                request
+        );
+    }
+
+    @ExceptionHandler({
+            AnimalPhotoException.class,
+            ImageStorageException.class
+    })
+    public ResponseEntity<ApiErrorResponse> handleImageStorage(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                request
+        );
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
             HttpServletRequest request
     ) {
+        return buildResponse(
+                HttpStatus.CONTENT_TOO_LARGE,
+                "Uploaded file exceeds the maximum allowed size",
+                request
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleUnexpected(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                request
+        );
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildResponse(
+            HttpStatus status,
+            String message,
+            HttpServletRequest request
+    ) {
         ApiErrorResponse response = new ApiErrorResponse(
                 Instant.now(),
-                HttpStatus.CONTENT_TOO_LARGE.value(),
-                HttpStatus.CONTENT_TOO_LARGE.getReasonPhrase(),
-                "Uploaded file exceeds the maximum allowed size",
+                status.value(),
+                status.getReasonPhrase(),
+                message,
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE)
+        return ResponseEntity.status(status)
                 .body(response);
     }
 }

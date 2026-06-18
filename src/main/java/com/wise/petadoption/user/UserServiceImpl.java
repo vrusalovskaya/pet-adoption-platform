@@ -21,6 +21,10 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public User create(CreateUserCommand command) {
+        if (userRepository.existsByEmail(command.email())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+
         UserEntity userEntity = entityMapper.toEntity(command);
         userEntity.setPasswordHash(passwordEncoder.encode(command.rawPassword()));
         UserEntity saved = userRepository.save(userEntity);

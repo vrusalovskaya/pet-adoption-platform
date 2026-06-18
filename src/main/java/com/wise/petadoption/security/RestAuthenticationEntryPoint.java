@@ -18,8 +18,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
             AuthenticationException authException
     ) throws IOException {
 
-//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        response.setContentType("application/json");
-//        response.getWriter().write("Unauthorized");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        response.getWriter().write("""
+                {
+                  "status": 401,
+                  "error": "Unauthorized",
+                  "message": "Authentication is required"
+                }
+                """);
     }
 }
+
