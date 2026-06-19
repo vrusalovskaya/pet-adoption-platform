@@ -1,7 +1,8 @@
-package com.wise.petadoption.user;
+package com.wise.petadoption.user.domain;
 
-public record ModifyUserCommand(
-        Long id,
+import com.wise.petadoption.user.common.Role;
+
+public record CreateUserCommand(
         String email,
         String rawPassword,
         String firstName,

@@ -1,5 +1,6 @@
-package com.wise.petadoption.user;
+package com.wise.petadoption.user.pesistence;
 
+import com.wise.petadoption.user.common.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

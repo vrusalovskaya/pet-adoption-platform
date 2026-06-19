@@ -1,4 +1,6 @@
-package com.wise.petadoption.user;
+package com.wise.petadoption.user.domain;
+
+import com.wise.petadoption.user.common.Role;
 
 import java.time.LocalDateTime;
 

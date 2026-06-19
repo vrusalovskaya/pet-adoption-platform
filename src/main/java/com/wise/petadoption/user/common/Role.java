@@ -1,4 +1,4 @@
-package com.wise.petadoption.user;
+package com.wise.petadoption.user.common;
 
 public enum Role {
     ROLE_USER,

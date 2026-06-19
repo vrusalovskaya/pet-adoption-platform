@@ -1,7 +1,7 @@
 package com.wise.petadoption.security;
 
-import com.wise.petadoption.user.Role;
-import com.wise.petadoption.user.User;
+import com.wise.petadoption.user.common.Role;
+import com.wise.petadoption.user.domain.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

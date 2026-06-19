@@ -2,10 +2,10 @@ package com.wise.petadoption.security.auth.service;
 
 import com.wise.petadoption.security.jwt.JwtService;
 import com.wise.petadoption.security.SecurityUser;
-import com.wise.petadoption.user.CreateUserCommand;
-import com.wise.petadoption.user.Role;
-import com.wise.petadoption.user.User;
-import com.wise.petadoption.user.UserService;
+import com.wise.petadoption.user.domain.CreateUserCommand;
+import com.wise.petadoption.user.common.Role;
+import com.wise.petadoption.user.domain.User;
+import com.wise.petadoption.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

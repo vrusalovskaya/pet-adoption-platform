@@ -1,5 +1,8 @@
-package com.wise.petadoption.user;
+package com.wise.petadoption.user.mapper;
 
+import com.wise.petadoption.user.domain.CreateUserCommand;
+import com.wise.petadoption.user.domain.User;
+import com.wise.petadoption.user.pesistence.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

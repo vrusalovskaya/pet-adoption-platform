@@ -3,6 +3,8 @@ package com.wise.petadoption.shared;
 import com.wise.petadoption.animal.exception.AnimalPhotoException;
 import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.shared.exception.NotFoundException;
+import com.wise.petadoption.user.exception.EmailAlreadyExistsException;
+import com.wise.petadoption.user.exception.InvalidPasswordException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -49,9 +51,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(
-            IllegalArgumentException ex,
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidPassword(
+            InvalidPasswordException ex,
             HttpServletRequest request
     ) {
         return buildResponse(
@@ -69,6 +71,18 @@ public class GlobalExceptionHandler {
         return buildResponse(
                 HttpStatus.CONFLICT,
                 "The resource already exists or violates a database constraint",
+                request
+        );
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExists(
+            EmailAlreadyExistsException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
                 request
         );
     }
