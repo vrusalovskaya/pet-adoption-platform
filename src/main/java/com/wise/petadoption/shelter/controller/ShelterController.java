@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -45,6 +46,7 @@ public class ShelterController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> create(@Valid @RequestBody ShelterRequest request) {
         ModifyShelterCommand command = toCommand(null, request);
 
@@ -56,6 +58,7 @@ public class ShelterController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> update(@PathVariable Long id, @Valid @RequestBody ShelterRequest request) {
         ModifyShelterCommand command = toCommand(id, request);
 
@@ -65,6 +68,7 @@ public class ShelterController {
     }
 
     @PatchMapping("/{id}/verify")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> verify(@PathVariable Long id) {
         Shelter verifiedShelter = shelterService.verify(id);
         ShelterResponse shelterResponse = shelterMapper.toResponse(verifiedShelter);
@@ -72,6 +76,7 @@ public class ShelterController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         shelterService.delete(id);
         return ResponseEntity.noContent().build();

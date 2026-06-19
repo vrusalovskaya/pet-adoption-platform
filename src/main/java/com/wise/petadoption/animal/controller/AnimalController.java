@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -50,6 +51,7 @@ public class AnimalController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AnimalResponse> create(@Valid @RequestBody AnimalRequest request) {
         ModifyAnimalCommand command = toCommand(null, request);
 
@@ -61,6 +63,7 @@ public class AnimalController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AnimalResponse> update(@PathVariable Long id, @Valid @RequestBody AnimalRequest request) {
         ModifyAnimalCommand command = toCommand(id, request);
 
@@ -70,6 +73,7 @@ public class AnimalController {
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AnimalResponse> updateStatus(@PathVariable Long id,
                                                        @Valid @RequestBody UpdateAnimalStatusRequest request) {
         Animal animal = animalService.setStatus(id, request.status());
@@ -78,6 +82,7 @@ public class AnimalController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         animalService.delete(id);
         return ResponseEntity.noContent().build();
