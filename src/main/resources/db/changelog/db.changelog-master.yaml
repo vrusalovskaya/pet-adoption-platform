@@ -35,3 +35,6 @@ databaseChangeLog:
 
   - include:
       file: classpath:db/changelog/changes/adoption/003-adoption-reset-sequence.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/auth/001-refresh-tokens-table.yaml

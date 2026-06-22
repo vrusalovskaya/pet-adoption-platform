@@ -14,3 +14,6 @@ databaseChangeLog:
 
         - sql:
             sql: CREATE SCHEMA IF NOT EXISTS adoption;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS auth;

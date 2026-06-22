@@ -1,10 +1,18 @@
 package com.wise.petadoption.security.auth.controller;
 
+import com.wise.petadoption.security.SecurityUser;
+import com.wise.petadoption.security.auth.AuthenticationResult;
+import com.wise.petadoption.security.auth.refresh.LogoutCommand;
+import com.wise.petadoption.security.auth.refresh.LogoutRequest;
+import com.wise.petadoption.security.auth.refresh.RefreshCommand;
+import com.wise.petadoption.security.auth.refresh.RefreshRequest;
 import com.wise.petadoption.security.auth.service.AuthenticationFacade;
 import com.wise.petadoption.security.auth.service.LoginCommand;
 import com.wise.petadoption.security.auth.service.RegisterCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,12 +27,32 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-        return new AuthResponse(auth.login(toCommand(request)));
+        AuthenticationResult result = auth.login(toCommand(request));
+        return new AuthResponse(result.accessToken(), result.refreshToken());
     }
 
     @PostMapping("/register")
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
-        return new AuthResponse(auth.register(toCommand(request)));
+        AuthenticationResult result = auth.register(toCommand(request));
+        return new AuthResponse(result.accessToken(), result.refreshToken());
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponse refresh(@Valid @RequestBody RefreshRequest request) {
+        AuthenticationResult result = auth.refresh(toCommand(request));
+        return new AuthResponse(result.accessToken(), result.refreshToken());
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
+        auth.logout(toCommand(request));
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<Void> logoutEverywhere(@AuthenticationPrincipal SecurityUser user) {
+        auth.logoutEverywhere(user.getUserId());
+        return ResponseEntity.noContent().build();
     }
 
     private RegisterCommand toCommand(RegisterRequest request) {
@@ -34,5 +62,13 @@ public class AuthController {
 
     private LoginCommand toCommand(LoginRequest request) {
         return new LoginCommand(request.email(), request.password());
+    }
+
+    private RefreshCommand toCommand(RefreshRequest request) {
+        return new RefreshCommand(request.refreshToken());
+    }
+
+    private LogoutCommand toCommand(LogoutRequest request) {
+        return new LogoutCommand(request.refreshToken());
     }
 }

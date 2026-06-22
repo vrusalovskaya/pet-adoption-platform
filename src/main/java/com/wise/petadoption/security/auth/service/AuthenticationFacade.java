@@ -1,7 +1,17 @@
 package com.wise.petadoption.security.auth.service;
 
-public interface AuthenticationFacade {
-    String login(LoginCommand command);
+import com.wise.petadoption.security.auth.AuthenticationResult;
+import com.wise.petadoption.security.auth.refresh.LogoutCommand;
+import com.wise.petadoption.security.auth.refresh.RefreshCommand;
 
-    String register(RegisterCommand command);
+public interface AuthenticationFacade {
+    AuthenticationResult login(LoginCommand command);
+
+    AuthenticationResult register(RegisterCommand command);
+
+    AuthenticationResult refresh(RefreshCommand command);
+
+    void logout(LogoutCommand command);
+
+    void logoutEverywhere(Long userId);
 }

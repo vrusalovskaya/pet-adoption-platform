@@ -5,12 +5,12 @@ import com.wise.petadoption.user.domain.CreateUserCommand;
 import com.wise.petadoption.user.domain.UpdateProfileCommand;
 import com.wise.petadoption.user.domain.User;
 
-import java.util.Optional;
-
 public interface UserService {
     User create(CreateUserCommand command);
 
-    Optional<User> findByEmail(String email);
+    User findByEmail(String email);
+
+    User findById(Long id);
 
     User updateProfile(Long id, UpdateProfileCommand request);
 

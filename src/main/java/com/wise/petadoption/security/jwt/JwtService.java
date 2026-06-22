@@ -16,17 +16,18 @@ public class JwtService {
 
     private static final String SECRET =
             "very-strong-secret-key-should-be-at-least-32-bytes";
+    private static final Integer VALIDITY_PERIOD_MS = 900000;
 
     private final SecretKey key =
             Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(SecurityUser user) {
+    public String generateAccessToken(SecurityUser user) {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .claim("userId", user.getUserId())
                 .claim("name", user.getFullName())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .expiration(new Date(System.currentTimeMillis() + VALIDITY_PERIOD_MS))
                 .signWith(key)
                 .compact();
     }

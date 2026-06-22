@@ -17,8 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -45,8 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email).map(entityMapper::toModel);
+    public User findByEmail(String email) {
+        return entityMapper.toModel(getEntityByEmail(email));
+    }
+
+    @Override
+    public User findById(Long id) {
+        return entityMapper.toModel(getEntityById(id));
     }
 
     @Override
@@ -92,5 +95,9 @@ public class UserServiceImpl implements UserService {
 
     private UserEntity getEntityById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    private UserEntity getEntityByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 }
