@@ -20,7 +20,7 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: token
+                  name: token_hash
                   type: VARCHAR(255)
                   constraints:
                     nullable: false

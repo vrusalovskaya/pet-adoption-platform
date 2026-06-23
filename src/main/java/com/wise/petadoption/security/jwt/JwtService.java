@@ -1,6 +1,6 @@
 package com.wise.petadoption.security.jwt;
 
-import com.wise.petadoption.security.SecurityUser;
+import com.wise.petadoption.security.domain.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -16,7 +16,7 @@ public class JwtService {
 
     private static final String SECRET =
             "very-strong-secret-key-should-be-at-least-32-bytes";
-    private static final Integer VALIDITY_PERIOD_MS = 900000;
+    private static final int VALIDITY_PERIOD_MS = 900000;
 
     private final SecretKey key =
             Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));

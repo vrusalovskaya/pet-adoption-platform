@@ -1,6 +1,6 @@
 package com.wise.petadoption.user.controller;
 
-import com.wise.petadoption.security.SecurityUser;
+import com.wise.petadoption.security.domain.SecurityUser;
 import com.wise.petadoption.user.domain.ChangePasswordCommand;
 import com.wise.petadoption.user.domain.UpdateProfileCommand;
 import com.wise.petadoption.user.mapper.UserResponseMapper;

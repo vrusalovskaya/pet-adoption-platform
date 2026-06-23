@@ -1,6 +1,6 @@
 package com.wise.petadoption.security.jwt;
 
-import com.wise.petadoption.security.CustomUserDetailsService;
+import com.wise.petadoption.security.integration.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

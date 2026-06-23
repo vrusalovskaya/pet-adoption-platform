@@ -1,0 +1,97 @@
+package com.wise.petadoption.security.service;
+
+import com.wise.petadoption.security.domain.RefreshTokenRotationResult;
+import com.wise.petadoption.security.persistence.RefreshTokenEntity;
+import com.wise.petadoption.security.persistence.RefreshTokenRepository;
+import com.wise.petadoption.security.exception.*;
+import com.wise.petadoption.user.pesistence.UserEntity;
+import com.wise.petadoption.user.pesistence.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+
+@Service
+@RequiredArgsConstructor
+public class RefreshTokenServiceImpl implements RefreshTokenService {
+    private static final int VALIDITY_PERIOD_DAYS = 30;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    private final RefreshTokenRepository repository;
+    private final UserRepository userRepository;
+    private final HashCalculator hashCalculator;
+
+    @Override
+    @Transactional
+    public String create(Long userId) {
+        String rawToken = generateToken();
+        UserEntity userEntity = userRepository.getReferenceById(userId);
+        RefreshTokenEntity tokenEntity = buildTokenEntity(userEntity, rawToken);
+
+        repository.save(tokenEntity);
+
+        return rawToken;
+    }
+
+    @Override
+    @Transactional
+    public RefreshTokenRotationResult rotate(String token) {
+        String hash = hashCalculator.calculate(token);
+        RefreshTokenEntity tokenEntity = loadAndValidateToken(hash);
+
+        repository.deleteByTokenHash(hash);
+
+        String rawToken = generateToken();
+        UserEntity userEntity = tokenEntity.getUserEntity();
+        RefreshTokenEntity newEntity = buildTokenEntity(userEntity, rawToken);
+
+        repository.save(newEntity);
+
+        return new RefreshTokenRotationResult(rawToken, userEntity.getId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteByTokenIfExists(String token) {
+        String hash = hashCalculator.calculate(token);
+        repository.deleteByTokenHash(hash);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        repository.deleteAllByUserEntityId(userId);
+    }
+
+    private String generateToken() {
+        byte[] bytes = new byte[32];
+        SECURE_RANDOM.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private RefreshTokenEntity buildTokenEntity(UserEntity userEntity, String rawToken) {
+        RefreshTokenEntity tokenEntity = new RefreshTokenEntity();
+        tokenEntity.setTokenHash(hashCalculator.calculate(rawToken));
+        tokenEntity.setUserEntity(userEntity);
+        tokenEntity.setExpiresAt(Instant.now().plus(VALIDITY_PERIOD_DAYS, ChronoUnit.DAYS));
+
+        return tokenEntity;
+    }
+
+    private RefreshTokenEntity loadAndValidateToken(String hash) {
+        RefreshTokenEntity tokenEntity = repository.findByTokenHash(hash)
+                .orElseThrow(() -> new InvalidRefreshTokenException("Token not found"));
+
+        if (tokenEntity.getExpiresAt().isBefore(Instant.now())) {
+            //TODO add cron task to delete expired tokens
+            repository.deleteByTokenHash(hash);
+            throw new InvalidRefreshTokenException("Token is expired");
+        }
+
+        return tokenEntity;
+    }
+}
