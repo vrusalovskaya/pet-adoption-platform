@@ -9,9 +9,9 @@ databaseChangeLog:
         - sql:
             sql: |
               SELECT setval(
-                  'adoption.adoption_requests_id_seq',
+                  'adoption.adoption_applications_id_seq',
                   (
                       SELECT COALESCE(MAX(id), 1)
-                      FROM adoption.adoption_requests
+                      FROM adoption.adoption_applications
                   )
               );

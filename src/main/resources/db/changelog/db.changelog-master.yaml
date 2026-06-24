@@ -28,7 +28,7 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/catalog/005-catalog-reset-sequences.yaml
 
   - include:
-      file: classpath:db/changelog/changes/adoption/001-adoption-requests-table.yaml
+      file: classpath:db/changelog/changes/adoption/001-adoption-applications-table.yaml
 
   - include:
       file: classpath:db/changelog/changes/adoption/002-adoption-seed.yaml

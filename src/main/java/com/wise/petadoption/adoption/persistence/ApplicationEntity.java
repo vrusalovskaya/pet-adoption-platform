@@ -1,5 +1,6 @@
-package com.wise.petadoption.adoption;
+package com.wise.petadoption.adoption.persistence;
 
+import com.wise.petadoption.adoption.common.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +11,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema = "adoption", name = "adoption_requests")
+@Table(schema = "adoption", name = "adoption_applications")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdoptionRequestEntity {
+public class ApplicationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,12 +32,12 @@ public class AdoptionRequestEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private RequestStatus status;
+    private ApplicationStatus status;
 
     @Column(columnDefinition = "TEXT")
     private String decisionComment;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, insertable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp

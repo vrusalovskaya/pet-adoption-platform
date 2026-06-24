@@ -8,7 +8,7 @@ databaseChangeLog:
 
         - insert:
             schemaName: adoption
-            tableName: adoption_requests
+            tableName: adoption_applications
 
             columns:
               - column:

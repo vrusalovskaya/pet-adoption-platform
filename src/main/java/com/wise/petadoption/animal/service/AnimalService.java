@@ -19,4 +19,6 @@ public interface AnimalService {
     Animal setStatus(Long id, AnimalStatus status);
 
     void delete(Long id);
+
+    void reserveIfAvailable(Long id);
 }

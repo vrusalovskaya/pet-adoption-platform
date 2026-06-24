@@ -1,5 +1,8 @@
 package com.wise.petadoption.shared;
 
+import com.wise.petadoption.adoption.exception.ApplicationAccessDeniedException;
+import com.wise.petadoption.adoption.exception.ApplicationNotPendingException;
+import com.wise.petadoption.animal.exception.AnimalNotAvailableException;
 import com.wise.petadoption.animal.exception.AnimalPhotoException;
 import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.shared.exception.NotFoundException;
@@ -28,6 +31,18 @@ public class GlobalExceptionHandler {
         return buildResponse(
                 HttpStatus.FORBIDDEN,
                 "You do not have permission to perform this action",
+                request
+        );
+    }
+
+    @ExceptionHandler(ApplicationAccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(
+            ApplicationAccessDeniedException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.FORBIDDEN,
+                ex.getMessage(),
                 request
         );
     }
@@ -88,9 +103,12 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExists(
-            EmailAlreadyExistsException ex,
+    @ExceptionHandler({
+            EmailAlreadyExistsException.class,
+            AnimalNotAvailableException.class,
+            ApplicationNotPendingException.class})
+    public ResponseEntity<ApiErrorResponse> handleConflict(
+            Exception ex,
             HttpServletRequest request
     ) {
         return buildResponse(

@@ -4,6 +4,7 @@ import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.animal.domain.Animal;
 import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.exception.AnimalNotAvailableException;
 import com.wise.petadoption.animal.exception.AnimalNotFoundException;
 import com.wise.petadoption.animal.mapper.AnimalEntityMapper;
 import com.wise.petadoption.animal.persistence.AnimalEntity;
@@ -96,6 +97,15 @@ public class AnimalServiceImpl implements AnimalService {
             animalPhotoService.delete(id);
         }
         animalRepository.delete(loadedEntity);
+    }
+
+    @Override
+    public void reserveIfAvailable(Long id) {
+        int updated = animalRepository.reserveAnimal(id);
+
+        if (updated == 0) {
+            throw new AnimalNotAvailableException(id);
+        }
     }
 
     private AnimalEntity getEntityById(Long id) {

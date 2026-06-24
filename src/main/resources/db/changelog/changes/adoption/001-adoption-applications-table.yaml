@@ -1,14 +1,14 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 001-adoption-requests-table
+      id: 001-adoption-applications-table
       author: victoria
 
       changes:
 
         - createTable:
             schemaName: adoption
-            tableName: adoption_requests
+            tableName: adoption_applications
 
             columns:
 
@@ -63,7 +63,7 @@ databaseChangeLog:
 
         - createIndex:
             schemaName: adoption
-            tableName: adoption_requests
+            tableName: adoption_applications
             indexName: idx_adoption_applications_animal_id
 
             columns:
@@ -72,7 +72,7 @@ databaseChangeLog:
 
         - createIndex:
             schemaName: adoption
-            tableName: adoption_requests
+            tableName: adoption_applications
             indexName: idx_adoption_applications_applicant_id
 
             columns:
