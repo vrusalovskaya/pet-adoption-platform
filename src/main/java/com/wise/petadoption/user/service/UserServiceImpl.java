@@ -29,15 +29,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(CreateUserCommand command) {
-        if (userRepository.existsByEmail(command.email())) {
-            throw new EmailAlreadyExistsException(command.email());
-        }
-
+        validateEmail(command.email());
         UserEntity userEntity = entityMapper.toEntity(command);
         userEntity.setPasswordHash(passwordEncoder.encode(command.rawPassword()));
-        UserEntity saved = userRepository.save(userEntity);
-        entityManager.flush();
-        entityManager.refresh(saved);
+        UserEntity saved = saveAndRefresh(userEntity);
         return entityMapper.toModel(saved);
     }
 
@@ -54,35 +49,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User updateProfile(Long id, UpdateProfileCommand command) {
-        UserEntity userEntity = getEntityById(id);
+    public User updateProfile(UpdateProfileCommand command) {
+        UserEntity userEntity = getEntityById(command.id());
 
-        if (!userEntity.getEmail().equals(command.email())
-            && userRepository.existsByEmail(command.email())) {
-            throw new EmailAlreadyExistsException(command.email());
+        if (!userEntity.getEmail().equals(command.email())) {
+            validateEmail(command.email());
         }
 
-        userEntity.setEmail(command.email());
-        userEntity.setFirstName(command.firstName());
-        userEntity.setLastName(command.lastName());
-        userEntity.setPhone(command.phone());
-
+        updateEntityFields(command, userEntity);
         return entityMapper.toModel(userEntity);
     }
 
     @Override
     @Transactional
-    public void changePassword(Long userId, ChangePasswordCommand command) {
-        UserEntity userEntity = getEntityById(userId);
-
-        if (!passwordEncoder.matches(command.oldPassword(), userEntity.getPasswordHash())) {
-            throw new InvalidPasswordException("Old Password Mismatch");
-        }
-
-        if (passwordEncoder.matches(command.newPassword(), userEntity.getPasswordHash())) {
-            throw new InvalidPasswordException("New password must differ from old password");
-        }
-
+    public void changePassword(ChangePasswordCommand command) {
+        UserEntity userEntity = getEntityById(command.id());
+        validatePassword(command, userEntity.getPasswordHash());
         userEntity.setPasswordHash(passwordEncoder.encode(command.newPassword()));
     }
 
@@ -99,5 +81,35 @@ public class UserServiceImpl implements UserService {
 
     private UserEntity getEntityByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+    }
+
+    private void validateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException(email);
+        }
+    }
+
+    private UserEntity saveAndRefresh(UserEntity userEntity) {
+        UserEntity saved = userRepository.save(userEntity);
+        entityManager.flush();
+        entityManager.refresh(saved);
+        return saved;
+    }
+
+    private void updateEntityFields(UpdateProfileCommand command, UserEntity userEntity) {
+        userEntity.setEmail(command.email());
+        userEntity.setFirstName(command.firstName());
+        userEntity.setLastName(command.lastName());
+        userEntity.setPhone(command.phone());
+    }
+
+    private void validatePassword(ChangePasswordCommand command, String currentPasswordHash) {
+        if (!passwordEncoder.matches(command.oldPassword(), currentPasswordHash)) {
+            throw new InvalidPasswordException("Old Password Mismatch");
+        }
+
+        if (passwordEncoder.matches(command.newPassword(), currentPasswordHash)) {
+            throw new InvalidPasswordException("New password must differ from old password");
+        }
     }
 }

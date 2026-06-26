@@ -12,9 +12,9 @@ public interface UserService {
 
     User findById(Long id);
 
-    User updateProfile(Long id, UpdateProfileCommand request);
+    User updateProfile(UpdateProfileCommand request);
 
-    void changePassword(Long userId, ChangePasswordCommand command);
+    void changePassword(ChangePasswordCommand command);
 
     void delete(Long id);
 }

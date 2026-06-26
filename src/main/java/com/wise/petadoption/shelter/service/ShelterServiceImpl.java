@@ -3,7 +3,7 @@ package com.wise.petadoption.shelter.service;
 import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import com.wise.petadoption.shelter.exception.ShelterNotFoundException;
-import com.wise.petadoption.shelter.mapper.ShelterMapper;
+import com.wise.petadoption.shelter.mapper.ShelterEntityMapper;
 import com.wise.petadoption.shelter.persistence.ShelterEntity;
 import com.wise.petadoption.shelter.persistence.ShelterRepository;
 import com.wise.petadoption.shelter.persistence.ShelterSpecifications;
@@ -20,50 +20,38 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
-    private final ShelterMapper shelterMapper;
+    private final ShelterEntityMapper entityMapper;
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
     @Transactional(readOnly = true)
     public Page<Shelter> getAll(String city, Boolean verified, Pageable pageable) {
-        Specification<ShelterEntity> specification = Specification
-                .where(ShelterSpecifications.cityEquals(city))
-                .and(ShelterSpecifications.verifiedEquals(verified));
-
-        return shelterRepository.findAll(specification, pageable).map(shelterMapper::toModel);
+        Specification<ShelterEntity> specification = buildSpecification(city, verified);
+        return shelterRepository.findAll(specification, pageable).map(entityMapper::toModel);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Shelter get(long id) {
         ShelterEntity shelterEntity = getEntityById(id);
-        return shelterMapper.toModel(shelterEntity);
+        return entityMapper.toModel(shelterEntity);
     }
 
     @Override
     @Transactional
     public Shelter create(ModifyShelterCommand command) {
-        ShelterEntity shelterEntity = shelterMapper.toEntity(command);
-        ShelterEntity saved = shelterRepository.save(shelterEntity);
-        entityManager.flush();
-        entityManager.refresh(saved);
-        return shelterMapper.toModel(saved);
+        ShelterEntity shelterEntity = entityMapper.toEntity(command);
+        ShelterEntity saved = saveAndRefresh(shelterEntity);
+        return entityMapper.toModel(saved);
     }
 
     @Override
     @Transactional
     public Shelter update(ModifyShelterCommand command) {
         ShelterEntity loadedEntity = getEntityById(command.id());
-
-        loadedEntity.setName(command.name());
-        loadedEntity.setCity(command.city());
-        loadedEntity.setAddress(command.address());
-        loadedEntity.setContactEmail(command.contactEmail());
-        loadedEntity.setContactPhone(command.contactPhone());
-        loadedEntity.setDescription(command.description());
-
-        return shelterMapper.toModel(loadedEntity);
+        updateEntityFields(command, loadedEntity);
+        return entityMapper.toModel(loadedEntity);
     }
 
     @Override
@@ -71,7 +59,7 @@ public class ShelterServiceImpl implements ShelterService {
     public Shelter verify(Long id) {
         ShelterEntity loadedEntity = getEntityById(id);
         loadedEntity.setVerified(true);
-        return shelterMapper.toModel(loadedEntity);
+        return entityMapper.toModel(loadedEntity);
     }
 
     @Override
@@ -83,5 +71,27 @@ public class ShelterServiceImpl implements ShelterService {
 
     private ShelterEntity getEntityById(Long id) {
         return shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException(id));
+    }
+
+    private Specification<ShelterEntity> buildSpecification(String city, Boolean verified) {
+        return Specification
+                .where(ShelterSpecifications.cityEquals(city))
+                .and(ShelterSpecifications.verifiedEquals(verified));
+    }
+
+    private ShelterEntity saveAndRefresh(ShelterEntity shelterEntity) {
+        ShelterEntity saved = shelterRepository.save(shelterEntity);
+        entityManager.flush();
+        entityManager.refresh(saved);
+        return saved;
+    }
+
+    private void updateEntityFields(ModifyShelterCommand command, ShelterEntity loadedEntity) {
+        loadedEntity.setName(command.name());
+        loadedEntity.setCity(command.city());
+        loadedEntity.setAddress(command.address());
+        loadedEntity.setContactEmail(command.contactEmail());
+        loadedEntity.setContactPhone(command.contactPhone());
+        loadedEntity.setDescription(command.description());
     }
 }

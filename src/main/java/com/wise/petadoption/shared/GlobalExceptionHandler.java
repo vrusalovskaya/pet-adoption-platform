@@ -1,14 +1,13 @@
 package com.wise.petadoption.shared;
 
 import com.wise.petadoption.adoption.exception.ApplicationAccessDeniedException;
-import com.wise.petadoption.adoption.exception.ApplicationNotPendingException;
-import com.wise.petadoption.animal.exception.AnimalNotAvailableException;
 import com.wise.petadoption.animal.exception.AnimalPhotoException;
-import com.wise.petadoption.shared.storage.exception.ImageStorageException;
+import com.wise.petadoption.shared.exception.ConflictException;
 import com.wise.petadoption.shared.exception.NotFoundException;
-import com.wise.petadoption.user.exception.EmailAlreadyExistsException;
+import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.user.exception.InvalidPasswordException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +20,11 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import java.time.Instant;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiErrorResponse> handleAuthorizationDenied(
-            AuthorizationDeniedException ex,
             HttpServletRequest request
     ) {
         return buildResponse(
@@ -59,6 +58,37 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler({
+            ConflictException.class,
+            DataIntegrityViolationException.class
+    })
+    public ResponseEntity<ApiErrorResponse> handleConflict(
+            Exception ex,
+            HttpServletRequest request
+    ) {
+        String message = ex instanceof DataIntegrityViolationException
+                ? "The resource already exists or violates a database constraint"
+                : ex.getMessage();
+
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                message,
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidPassword(
+            InvalidPasswordException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage(),
+                request
+        );
+    }
+
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorResponse> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex,
@@ -79,41 +109,13 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidPassword(
-            InvalidPasswordException ex,
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
             HttpServletRequest request
     ) {
         return buildResponse(
-                HttpStatus.BAD_REQUEST,
-                ex.getMessage(),
-                request
-        );
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(
-            DataIntegrityViolationException ex,
-            HttpServletRequest request
-    ) {
-        return buildResponse(
-                HttpStatus.CONFLICT,
-                "The resource already exists or violates a database constraint",
-                request
-        );
-    }
-
-    @ExceptionHandler({
-            EmailAlreadyExistsException.class,
-            AnimalNotAvailableException.class,
-            ApplicationNotPendingException.class})
-    public ResponseEntity<ApiErrorResponse> handleConflict(
-            Exception ex,
-            HttpServletRequest request
-    ) {
-        return buildResponse(
-                HttpStatus.CONFLICT,
-                ex.getMessage(),
+                HttpStatus.CONTENT_TOO_LARGE,
+                "Uploaded file exceeds the maximum allowed size",
                 request
         );
     }
@@ -133,25 +135,16 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
-            HttpServletRequest request
-    ) {
-        return buildResponse(
-                HttpStatus.CONTENT_TOO_LARGE,
-                "Uploaded file exceeds the maximum allowed size",
-                request
-        );
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleUnexpected(
             Exception ex,
             HttpServletRequest request
     ) {
+        log.error("Unexpected error", ex);
+
         return buildResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                ex.getMessage(),
+                "Internal server error",
                 request
         );
     }

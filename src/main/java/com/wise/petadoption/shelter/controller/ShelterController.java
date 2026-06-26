@@ -4,7 +4,7 @@ import com.wise.petadoption.shelter.api.ShelterRequest;
 import com.wise.petadoption.shelter.api.ShelterResponse;
 import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
-import com.wise.petadoption.shelter.mapper.ShelterMapper;
+import com.wise.petadoption.shelter.mapper.ShelterResponseMapper;
 import com.wise.petadoption.shelter.service.ShelterService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class ShelterController {
     private final ShelterService shelterService;
-    private final ShelterMapper shelterMapper;
+    private final ShelterResponseMapper responseMapper;
 
     @GetMapping
     public Page<ShelterResponse> getAll(@RequestParam(required = false) String city,
@@ -36,13 +36,13 @@ public class ShelterController {
                                                 direction = Sort.Direction.DESC
                                         )
                                         Pageable pageable) {
-        return shelterService.getAll(city, verified, pageable).map(shelterMapper::toResponse);
+        return shelterService.getAll(city, verified, pageable).map(responseMapper::toResponse);
     }
 
     @GetMapping("/{id}")
     public ShelterResponse get(@PathVariable Long id) {
         Shelter shelter = shelterService.get(id);
-        return shelterMapper.toResponse(shelter);
+        return responseMapper.toResponse(shelter);
     }
 
     @PostMapping
@@ -51,7 +51,7 @@ public class ShelterController {
         ModifyShelterCommand command = toCommand(null, request);
 
         Shelter shelter = shelterService.create(command);
-        ShelterResponse shelterResponse = shelterMapper.toResponse(shelter);
+        ShelterResponse shelterResponse = responseMapper.toResponse(shelter);
 
         URI location = URI.create(String.format("/api/v1/shelters/%d", shelterResponse.id()));
         return ResponseEntity.created(location).body(shelterResponse);
@@ -63,7 +63,7 @@ public class ShelterController {
         ModifyShelterCommand command = toCommand(id, request);
 
         Shelter updatedShelter = shelterService.update(command);
-        ShelterResponse shelterResponse = shelterMapper.toResponse(updatedShelter);
+        ShelterResponse shelterResponse = responseMapper.toResponse(updatedShelter);
         return ResponseEntity.ok(shelterResponse);
     }
 
@@ -71,7 +71,7 @@ public class ShelterController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> verify(@PathVariable Long id) {
         Shelter verifiedShelter = shelterService.verify(id);
-        ShelterResponse shelterResponse = shelterMapper.toResponse(verifiedShelter);
+        ShelterResponse shelterResponse = responseMapper.toResponse(verifiedShelter);
         return ResponseEntity.ok(shelterResponse);
     }
 
