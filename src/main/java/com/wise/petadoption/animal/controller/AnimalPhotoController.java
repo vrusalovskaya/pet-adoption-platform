@@ -25,7 +25,7 @@ public class AnimalPhotoController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> upload(@PathVariable Long id, @RequestPart("file") MultipartFile file) {
         animalPhotoService.replacePhoto(id, file);
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/photo")

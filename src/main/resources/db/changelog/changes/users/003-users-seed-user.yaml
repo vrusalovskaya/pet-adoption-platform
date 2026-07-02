@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 002-users-seed-admin
+      id: 003-users-seed-user
       author: victoria
 
       changes:
@@ -13,23 +13,23 @@ databaseChangeLog:
             columns:
               - column:
                   name: email
-                  value: admin@petadoption.com
+                  value: user@petadoption.com
 
               - column:
                   name: password_hash
-                  value: $2a$10$dbZvHn3Koghbm.1td/NQFu12HdhJECJ/xqXt07x2X16hfDMs7VxGq
+                  value: $2a$10$JV6b2SQR/CpLxmdw8gAR1eHndpxDuaB0NHgs3dOJQza11cayWdtJO
 
               - column:
                   name: first_name
-                  value: System
+                  value: Test
 
               - column:
                   name: last_name
-                  value: Admin
+                  value: User
 
               - column:
                   name: role
-                  value: ROLE_ADMIN
+                  value: ROLE_USER
 
               - column:
                   name: created_at

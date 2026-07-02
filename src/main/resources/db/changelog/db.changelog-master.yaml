@@ -10,7 +10,10 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/users/002-users-seed-admin.yaml
 
   - include:
-      file: classpath:db/changelog/changes/users/003-users-reset-sequence.yaml
+      file: classpath:db/changelog/changes/users/003-users-seed-user.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/users/004-users-reset-sequence.yaml
 
   - include:
       file: classpath:db/changelog/changes/catalog/001-catalog-shelters-table.yaml
