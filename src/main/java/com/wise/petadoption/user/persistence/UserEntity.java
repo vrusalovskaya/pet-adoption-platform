@@ -1,4 +1,4 @@
-package com.wise.petadoption.user.pesistence;
+package com.wise.petadoption.user.persistence;
 
 import com.wise.petadoption.user.common.Role;
 import jakarta.persistence.*;

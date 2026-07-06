@@ -1,11 +1,13 @@
 package com.wise.petadoption.adoption.service;
 
-import com.wise.petadoption.adoption.domain.*;
+import com.wise.petadoption.adoption.common.ApplicationStatus;
+import com.wise.petadoption.adoption.domain.Application;
+import com.wise.petadoption.adoption.domain.CreateApplicationCommand;
+import com.wise.petadoption.adoption.domain.RejectionCommand;
 import com.wise.petadoption.adoption.exception.ApplicationAccessDeniedException;
 import com.wise.petadoption.adoption.exception.ApplicationNotFoundException;
 import com.wise.petadoption.adoption.exception.ApplicationNotPendingException;
 import com.wise.petadoption.adoption.mapper.ApplicationEntityMapper;
-import com.wise.petadoption.adoption.common.ApplicationStatus;
 import com.wise.petadoption.adoption.persistence.ApplicationEntity;
 import com.wise.petadoption.adoption.persistence.ApplicationRepository;
 import com.wise.petadoption.adoption.persistence.ApplicationSpecifications;
@@ -61,11 +63,16 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Application get(Long id, CurrentUser currentUser) {
+    public Application getForAdmin(Long id) {
         ApplicationEntity applicationEntity = getEntityById(id);
-        if (!currentUser.isAdmin()) {
-            validateOwnership(applicationEntity, currentUser);
-        }
+        return entityMapper.toModel(applicationEntity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Application getForUser(Long id, Long userId) {
+        ApplicationEntity applicationEntity = getEntityById(id);
+        validateOwnership(applicationEntity, userId);
         return entityMapper.toModel(applicationEntity);
     }
 
@@ -97,9 +104,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     @Transactional
-    public Application cancel(Long id, CurrentUser currentUser) {
+    public Application cancel(Long id, Long userId) {
         ApplicationEntity applicationEntity = getEntityById(id);
-        validateOwnership(applicationEntity, currentUser);
+        validateOwnership(applicationEntity, userId);
         validateStatusIsPending(applicationEntity);
 
         applicationEntity.setStatus(ApplicationStatus.CANCELLED);
@@ -145,8 +152,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
     }
 
-    private void validateOwnership(ApplicationEntity applicationEntity, CurrentUser currentUser) {
-        if (!Objects.equals(applicationEntity.getApplicantId(), currentUser.id())) {
+    private void validateOwnership(ApplicationEntity applicationEntity, Long userId) {
+        if (!Objects.equals(applicationEntity.getApplicantId(), userId)) {
             throw new ApplicationAccessDeniedException();
         }
     }

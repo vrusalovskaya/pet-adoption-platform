@@ -26,9 +26,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         return path.equals("/api/v1/auth/login")
-               || path.equals("/api/v1/auth/register")
-               || path.equals("/api/v1/auth/refresh");
+                || path.equals("/api/v1/auth/register")
+                || path.equals("/api/v1/auth/refresh");
     }
+
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return false;
+    }
+
 
     @Override
     protected void doFilterInternal(

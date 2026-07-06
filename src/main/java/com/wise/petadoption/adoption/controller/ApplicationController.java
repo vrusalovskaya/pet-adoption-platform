@@ -6,7 +6,6 @@ import com.wise.petadoption.adoption.api.RejectionRequest;
 import com.wise.petadoption.adoption.common.ApplicationStatus;
 import com.wise.petadoption.adoption.domain.Application;
 import com.wise.petadoption.adoption.domain.CreateApplicationCommand;
-import com.wise.petadoption.adoption.domain.CurrentUser;
 import com.wise.petadoption.adoption.domain.RejectionCommand;
 import com.wise.petadoption.adoption.mapper.ApplicationResponseMapper;
 import com.wise.petadoption.adoption.service.ApplicationService;
@@ -32,6 +31,43 @@ public class ApplicationController {
     private final ApplicationService applicationService;
     private final ApplicationResponseMapper responseMapper;
 
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<ApplicationResponse> getAll(@RequestParam(required = false) ApplicationStatus status,
+                                            @RequestParam(required = false) Long animalId,
+                                            @RequestParam(required = false) Long applicantId,
+                                            @ParameterObject
+                                            @PageableDefault(
+                                                    size = 20,
+                                                    sort = "createdAt",
+                                                    direction = Sort.Direction.DESC
+                                            )
+                                            Pageable pageable
+    ) {
+        return applicationService.getAll(status, animalId, applicantId, pageable).map(responseMapper::toResponse);
+    }
+
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApplicationResponse getForAdmin(@PathVariable Long id) {
+        return responseMapper.toResponse(applicationService.getForAdmin(id));
+    }
+
+    @PatchMapping("/admin/{id}/approve")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApplicationResponse> approve(@PathVariable Long id) {
+        Application application = applicationService.approve(id);
+        return ResponseEntity.ok(responseMapper.toResponse(application));
+    }
+
+    @PatchMapping("/admin/{id}/reject")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApplicationResponse> reject(@PathVariable Long id,
+                                                      @Valid @RequestBody RejectionRequest request) {
+        Application application = applicationService.reject(toCommand(id, request));
+        return ResponseEntity.ok(responseMapper.toResponse(application));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApplicationResponse> create(@Valid @RequestBody ApplicationRequest request,
@@ -48,61 +84,30 @@ public class ApplicationController {
     @GetMapping("/my")
     @PreAuthorize("hasRole('USER')")
     public Page<ApplicationResponse> getMy(@ParameterObject
-                                               @PageableDefault(
-                                                         size = 20,
-                                                         sort = "createdAt",
-                                                         direction = Sort.Direction.DESC
-                                                 )
-                                                 Pageable pageable,
+                                           @PageableDefault(
+                                                   size = 20,
+                                                   sort = "createdAt",
+                                                   direction = Sort.Direction.DESC
+                                           )
+                                           Pageable pageable,
                                            @AuthenticationPrincipal SecurityUser user
     ) {
         return applicationService.getAllByApplicant(user.getUserId(), pageable).map(responseMapper::toResponse);
     }
 
-    @GetMapping()
-    @PreAuthorize("hasRole('ADMIN')")
-    public Page<ApplicationResponse> getAll(@RequestParam(required = false) ApplicationStatus status,
-                                            @RequestParam(required = false) Long animalId,
-                                            @RequestParam(required = false) Long applicantId,
-                                            @ParameterObject
-                                                    @PageableDefault(
-                                                            size = 20,
-                                                            sort = "createdAt",
-                                                            direction = Sort.Direction.DESC
-                                                    )
-                                                    Pageable pageable
-    ) {
-        return applicationService.getAll(status, animalId, applicantId, pageable).map(responseMapper::toResponse);
-    }
 
     @GetMapping("/{id}")
-    public ApplicationResponse get(@PathVariable Long id,
-                                   @AuthenticationPrincipal SecurityUser user) {
-        CurrentUser currentUser = toCurrentUser(user);
-        return responseMapper.toResponse(applicationService.get(id, currentUser));
-    }
-
-    @PatchMapping("/{id}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApplicationResponse> approve(@PathVariable Long id) {
-        Application application = applicationService.approve(id);
-        return ResponseEntity.ok(responseMapper.toResponse(application));
-    }
-
-    @PatchMapping("/{id}/reject")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApplicationResponse> reject(@PathVariable Long id,
-                                                      @Valid @RequestBody RejectionRequest request) {
-        Application application = applicationService.reject(toCommand(id, request));
-        return ResponseEntity.ok(responseMapper.toResponse(application));
+    @PreAuthorize("hasRole('USER')")
+    public ApplicationResponse getForUser(@PathVariable Long id,
+                                          @AuthenticationPrincipal SecurityUser user) {
+        return responseMapper.toResponse(applicationService.getForUser(id, user.getUserId()));
     }
 
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApplicationResponse> cancel(@PathVariable Long id,
                                                       @AuthenticationPrincipal SecurityUser user) {
-        CurrentUser currentUser = toCurrentUser(user);
-        Application application = applicationService.cancel(id, currentUser);
+        Application application = applicationService.cancel(id, user.getUserId());
         return ResponseEntity.ok(responseMapper.toResponse(application));
     }
 
@@ -110,11 +115,7 @@ public class ApplicationController {
         return new CreateApplicationCommand(request.animalId(), applicantId, request.message());
     }
 
-    RejectionCommand toCommand(Long id, RejectionRequest request){
+    RejectionCommand toCommand(Long id, RejectionRequest request) {
         return new RejectionCommand(id, request.decisionComment());
-    }
-
-    CurrentUser toCurrentUser(SecurityUser user) {
-        return new CurrentUser(user.getUserId(), user.getRole());
     }
 }

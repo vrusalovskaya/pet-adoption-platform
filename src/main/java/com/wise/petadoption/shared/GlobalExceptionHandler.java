@@ -11,32 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadCredentials(
-            BadCredentialsException ex,
-            HttpServletRequest request
-    ) {
-        log.error("Unexpected error", ex);
-
-        return buildResponse(
-                HttpStatus.UNAUTHORIZED,
-                "Invalid email or password",
-                request
-        );
-    }
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiErrorResponse> handleAuthorizationDenied(
@@ -120,17 +105,6 @@ public class GlobalExceptionHandler {
         return buildResponse(
                 HttpStatus.BAD_REQUEST,
                 message,
-                request
-        );
-    }
-
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
-            HttpServletRequest request
-    ) {
-        return buildResponse(
-                HttpStatus.CONTENT_TOO_LARGE,
-                "Uploaded file exceeds the maximum allowed size",
                 request
         );
     }

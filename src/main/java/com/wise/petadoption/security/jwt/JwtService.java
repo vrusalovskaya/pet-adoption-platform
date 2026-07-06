@@ -14,12 +14,20 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "very-strong-secret-key-should-be-at-least-32-bytes";
-    private static final int VALIDITY_PERIOD_MS = 900000;
+    private final JwtProperties properties;
+    private final SecretKey key;
 
-    private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    public JwtService(JwtProperties properties) {
+        if (properties.getSecret().length() < 32) {
+            throw new IllegalStateException("JWT secret must be at least 32 characters long");
+        }
+
+        this.properties = properties;
+
+        this.key = Keys.hmacShaKeyFor(
+                properties.getSecret().getBytes(StandardCharsets.UTF_8)
+        );
+    }
 
     public String generateAccessToken(SecurityUser user) {
         return Jwts.builder()
@@ -27,7 +35,7 @@ public class JwtService {
                 .claim("userId", user.getUserId())
                 .claim("name", user.getFullName())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + VALIDITY_PERIOD_MS))
+                .expiration(new Date(System.currentTimeMillis() + properties.getAccessTokenTtl().toMillis()))
                 .signWith(key)
                 .compact();
     }

@@ -1,11 +1,11 @@
 package com.wise.petadoption.shared.storage.minio;
 
+import com.wise.petadoption.shared.storage.contract.ImageStorage;
 import com.wise.petadoption.shared.storage.exception.ImageNotFoundException;
 import com.wise.petadoption.shared.storage.exception.ImageStorageException;
 import com.wise.petadoption.shared.storage.model.StorageType;
 import com.wise.petadoption.shared.storage.model.StoredImage;
 import com.wise.petadoption.shared.storage.model.StoredImageStream;
-import com.wise.petadoption.shared.storage.contract.ImageStorage;
 import io.minio.*;
 import io.minio.errors.ErrorResponseException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,11 +58,12 @@ public class MinioImageStorage implements ImageStorage {
 
             Set<String> filenames = stat.userMetadata().get("original-filename");
 
-            String filename = filenames.isEmpty()
-                    ? key
-                    : URLDecoder.decode(
-                    filenames.iterator().next(),
-                    StandardCharsets.UTF_8);
+            String filename = Optional.ofNullable(filenames)
+                    .filter(set -> !set.isEmpty())
+                    .map(set -> URLDecoder.decode(
+                            set.iterator().next(),
+                            StandardCharsets.UTF_8))
+                    .orElse(key);
 
             return new StoredImageStream(obj, stat.contentType(), filename, stat.size());
         } catch (ErrorResponseException e) {
@@ -84,5 +86,8 @@ public class MinioImageStorage implements ImageStorage {
         }
     }
 
-    @Override public StorageType type() { return StorageType.MINIO; }
+    @Override
+    public StorageType type() {
+        return StorageType.MINIO;
+    }
 }

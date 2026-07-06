@@ -1,26 +1,25 @@
 package com.wise.petadoption.security.service;
 
+import com.wise.petadoption.security.config.RefreshTokenProperties;
 import com.wise.petadoption.security.domain.RefreshTokenRotationResult;
+import com.wise.petadoption.security.exception.InvalidRefreshTokenException;
 import com.wise.petadoption.security.persistence.RefreshTokenEntity;
 import com.wise.petadoption.security.persistence.RefreshTokenRepository;
-import com.wise.petadoption.security.exception.*;
-import com.wise.petadoption.user.pesistence.UserEntity;
-import com.wise.petadoption.user.pesistence.UserRepository;
+import com.wise.petadoption.user.persistence.UserEntity;
+import com.wise.petadoption.user.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
-    private static final int VALIDITY_PERIOD_DAYS = 30;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-
+    private final RefreshTokenProperties properties;
     private final RefreshTokenRepository repository;
     private final UserRepository userRepository;
     private final HashCalculator hashCalculator;
@@ -77,7 +76,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshTokenEntity tokenEntity = new RefreshTokenEntity();
         tokenEntity.setTokenHash(hashCalculator.calculate(rawToken));
         tokenEntity.setUserEntity(userEntity);
-        tokenEntity.setExpiresAt(Instant.now().plus(VALIDITY_PERIOD_DAYS, ChronoUnit.DAYS));
+        tokenEntity.setExpiresAt(Instant.now().plus(properties.getTtl()));
 
         return tokenEntity;
     }
@@ -87,7 +86,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(() -> new InvalidRefreshTokenException("Token not found"));
 
         if (tokenEntity.getExpiresAt().isBefore(Instant.now())) {
-            //TODO add cron task to delete expired tokens
             repository.deleteByTokenHash(hash);
             throw new InvalidRefreshTokenException("Token is expired");
         }

@@ -1,4 +1,4 @@
-package com.wise.petadoption.user.pesistence;
+package com.wise.petadoption.user.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -32,6 +32,14 @@ import static com.wise.petadoption.animal.common.AnimalStatus.*;
 @RequiredArgsConstructor
 public class AnimalServiceImpl implements AnimalService {
 
+    /**
+     * Defines the valid lifecycle transitions for an animal.
+     * <p>
+     * AVAILABLE  -> RESERVED, WITHDRAWN
+     * RESERVED   -> ADOPTED, WITHDRAWN
+     * ADOPTED    -> (no further transitions)
+     * WITHDRAWN  -> (no further transitions)
+     */
     private static final Map<AnimalStatus, Set<AnimalStatus>> ALLOWED_TRANSITIONS =
             Map.of(
                     AVAILABLE, Set.of(RESERVED, WITHDRAWN),
