@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebMvcTestSecurityConfig {
 
     @Bean
-    public SecurityFilterChain testFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain testFilterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
