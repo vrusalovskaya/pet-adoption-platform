@@ -19,8 +19,8 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    private final RefreshTokenProperties properties;
-    private final RefreshTokenRepository repository;
+    private final RefreshTokenProperties refreshTokenProperties;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final HashCalculator hashCalculator;
 
@@ -31,7 +31,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         UserEntity userEntity = userRepository.getReferenceById(userId);
         RefreshTokenEntity tokenEntity = buildTokenEntity(userEntity, rawToken);
 
-        repository.save(tokenEntity);
+        refreshTokenRepository.save(tokenEntity);
 
         return rawToken;
     }
@@ -42,13 +42,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         String hash = hashCalculator.calculate(token);
         RefreshTokenEntity tokenEntity = loadAndValidateToken(hash);
 
-        repository.deleteByTokenHash(hash);
+        refreshTokenRepository.deleteByTokenHash(hash);
 
         String rawToken = generateToken();
         UserEntity userEntity = tokenEntity.getUserEntity();
         RefreshTokenEntity newEntity = buildTokenEntity(userEntity, rawToken);
 
-        repository.save(newEntity);
+        refreshTokenRepository.save(newEntity);
 
         return new RefreshTokenRotationResult(rawToken, userEntity.getId());
     }
@@ -57,13 +57,13 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Transactional
     public void deleteByTokenIfExists(String token) {
         String hash = hashCalculator.calculate(token);
-        repository.deleteByTokenHash(hash);
+        refreshTokenRepository.deleteByTokenHash(hash);
     }
 
     @Override
     @Transactional
     public void deleteByUserId(Long userId) {
-        repository.deleteAllByUserEntityId(userId);
+        refreshTokenRepository.deleteAllByUserEntityId(userId);
     }
 
     private String generateToken() {
@@ -76,17 +76,17 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         RefreshTokenEntity tokenEntity = new RefreshTokenEntity();
         tokenEntity.setTokenHash(hashCalculator.calculate(rawToken));
         tokenEntity.setUserEntity(userEntity);
-        tokenEntity.setExpiresAt(Instant.now().plus(properties.getTtl()));
+        tokenEntity.setExpiresAt(Instant.now().plus(refreshTokenProperties.getTtl()));
 
         return tokenEntity;
     }
 
     private RefreshTokenEntity loadAndValidateToken(String hash) {
-        RefreshTokenEntity tokenEntity = repository.findByTokenHash(hash)
+        RefreshTokenEntity tokenEntity = refreshTokenRepository.findByTokenHash(hash)
                 .orElseThrow(() -> new InvalidRefreshTokenException("Token not found"));
 
         if (tokenEntity.getExpiresAt().isBefore(Instant.now())) {
-            repository.deleteByTokenHash(hash);
+            refreshTokenRepository.deleteByTokenHash(hash);
             throw new InvalidRefreshTokenException("Token is expired");
         }
 

@@ -1,6 +1,6 @@
 package com.wise.petadoption.shelter.service;
 
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.exception.ShelterNotFoundException;
 import com.wise.petadoption.shelter.mapper.ShelterEntityMapper;
 import com.wise.petadoption.shelter.persistence.ShelterEntity;
@@ -44,7 +44,7 @@ class ShelterServiceImplTest {
     @Test
     void update_ExistingShelter_UpdatesMutableFields() {
         ShelterEntity entity = shelterEntity(1L);
-        ModifyShelterCommand command = new ModifyShelterCommand(1L, "New Name", "New City",
+        UpdateShelterCommand command = new UpdateShelterCommand(1L, "New Name", "New City",
                 "New Address", "new@example.com", "+15559998877", "New description");
         when(shelterRepository.findById(1L)).thenReturn(Optional.of(entity));
         when(entityMapper.toModel(entity)).thenReturn(shelter(1L));
@@ -58,7 +58,7 @@ class ShelterServiceImplTest {
 
     @Test
     void update_UnknownShelter_ThrowsShelterNotFoundException() {
-        ModifyShelterCommand command = modifyShelterCommand(99L);
+        UpdateShelterCommand command = updateShelterCommand(99L);
         when(shelterRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> shelterService.update(command))

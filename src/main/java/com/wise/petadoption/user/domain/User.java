@@ -2,7 +2,7 @@ package com.wise.petadoption.user.domain;
 
 import com.wise.petadoption.user.common.Role;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record User(
         Long id,
@@ -12,6 +12,6 @@ public record User(
         String lastName,
         String phone,
         Role role,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {
 }

@@ -21,7 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -38,7 +37,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     @Transactional
     public Application create(CreateApplicationCommand command) {
-        ApplicationEntity applicationEntity = buildApplicationEntity(command);
+        ApplicationEntity applicationEntity = entityMapper.toEntity(command);
+        applicationEntity.setStatus(ApplicationStatus.PENDING);
         ApplicationEntity saved = saveAndRefresh(applicationEntity);
         return entityMapper.toModel(saved);
     }
@@ -84,7 +84,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         animalService.reserveIfAvailable(applicationEntity.getAnimalId());
         applicationEntity.setStatus(ApplicationStatus.APPROVED);
-        applicationEntity.setUpdatedAt(LocalDateTime.now());
+        saveAndRefresh(applicationEntity);
 
         return entityMapper.toModel(applicationEntity);
     }
@@ -97,7 +97,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         applicationEntity.setStatus(ApplicationStatus.REJECTED);
         applicationEntity.setDecisionComment(command.decisionComment());
-        applicationEntity.setUpdatedAt(LocalDateTime.now());
+        saveAndRefresh(applicationEntity);
 
         return entityMapper.toModel(applicationEntity);
     }
@@ -110,20 +110,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         validateStatusIsPending(applicationEntity);
 
         applicationEntity.setStatus(ApplicationStatus.CANCELLED);
-        applicationEntity.setUpdatedAt(LocalDateTime.now());
+        saveAndRefresh(applicationEntity);
 
         return entityMapper.toModel(applicationEntity);
-    }
-
-
-    private ApplicationEntity buildApplicationEntity(CreateApplicationCommand command) {
-        ApplicationEntity applicationEntity = new ApplicationEntity();
-        applicationEntity.setAnimalId(command.animalId());
-        applicationEntity.setApplicantId(command.applicantId());
-        applicationEntity.setMessage(command.message());
-        applicationEntity.setStatus(ApplicationStatus.PENDING);
-
-        return applicationEntity;
     }
 
     private ApplicationEntity saveAndRefresh(ApplicationEntity applicationEntity) {

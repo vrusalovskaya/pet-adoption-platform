@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(schema = "catalog", name = "animals")
@@ -54,5 +54,5 @@ public class AnimalEntity {
     private PhotoMetadata photoMetadata;
 
     @Column(nullable = false, updatable = false, insertable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

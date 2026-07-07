@@ -1,5 +1,6 @@
 package com.wise.petadoption.security.service;
 
+import com.wise.petadoption.shared.scheduler.cleanup.RefreshTokenCleanupScheduler;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;

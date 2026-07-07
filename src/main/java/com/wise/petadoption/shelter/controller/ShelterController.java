@@ -2,7 +2,8 @@ package com.wise.petadoption.shelter.controller;
 
 import com.wise.petadoption.shelter.api.ShelterRequest;
 import com.wise.petadoption.shelter.api.ShelterResponse;
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import com.wise.petadoption.shelter.mapper.ShelterResponseMapper;
 import com.wise.petadoption.shelter.service.ShelterService;
@@ -48,7 +49,7 @@ public class ShelterController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> create(@Valid @RequestBody ShelterRequest request) {
-        ModifyShelterCommand command = toCommand(null, request);
+        CreateShelterCommand command = toCommand(request);
 
         Shelter shelter = shelterService.create(command);
         ShelterResponse shelterResponse = responseMapper.toResponse(shelter);
@@ -60,7 +61,7 @@ public class ShelterController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ShelterResponse> update(@PathVariable Long id, @Valid @RequestBody ShelterRequest request) {
-        ModifyShelterCommand command = toCommand(id, request);
+        UpdateShelterCommand command = toCommand(id, request);
 
         Shelter updatedShelter = shelterService.update(command);
         ShelterResponse shelterResponse = responseMapper.toResponse(updatedShelter);
@@ -82,8 +83,15 @@ public class ShelterController {
         return ResponseEntity.noContent().build();
     }
 
-    private static ModifyShelterCommand toCommand(Long id, ShelterRequest request) {
-        return new ModifyShelterCommand(
+    private static CreateShelterCommand toCommand(ShelterRequest request) {
+        return new CreateShelterCommand(
+                request.name(), request.city(), request.address(),
+                request.contactEmail(), request.contactPhone(), request.description()
+        );
+    }
+
+    private static UpdateShelterCommand toCommand(Long id, ShelterRequest request) {
+        return new UpdateShelterCommand(
                 id, request.name(), request.city(), request.address(),
                 request.contactEmail(), request.contactPhone(), request.description()
         );

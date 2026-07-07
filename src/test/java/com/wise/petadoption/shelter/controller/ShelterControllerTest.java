@@ -2,7 +2,8 @@ package com.wise.petadoption.shelter.controller;
 
 import com.wise.petadoption.security.domain.SecurityUser;
 import com.wise.petadoption.shelter.api.ShelterResponse;
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.mapper.ShelterResponseMapper;
 import com.wise.petadoption.shelter.service.ShelterService;
 import com.wise.petadoption.support.TestFixtures;
@@ -74,7 +75,7 @@ class ShelterControllerTest {
 
     @Test
     void create_AdminUser_ReturnsCreatedWithLocation() throws Exception {
-        when(shelterService.create(any(ModifyShelterCommand.class))).thenReturn(shelter(1L));
+        when(shelterService.create(any(CreateShelterCommand.class))).thenReturn(shelter(1L));
         when(responseMapper.toResponse(any())).thenReturn(shelterResponse());
 
         mockMvc.perform(post("/api/v1/shelters")
@@ -119,7 +120,7 @@ class ShelterControllerTest {
 
     @Test
     void update_AdminUser_ReturnsOk() throws Exception {
-        when(shelterService.update(any(ModifyShelterCommand.class))).thenReturn(shelter(1L));
+        when(shelterService.update(any(UpdateShelterCommand.class))).thenReturn(shelter(1L));
         when(responseMapper.toResponse(any())).thenReturn(shelterResponse());
 
         mockMvc.perform(put("/api/v1/shelters/1")

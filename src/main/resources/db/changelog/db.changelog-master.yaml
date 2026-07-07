@@ -41,3 +41,6 @@ databaseChangeLog:
 
   - include:
       file: classpath:db/changelog/changes/auth/001-refresh-tokens-table.yaml
+
+  - include:
+      file: classpath:db/changelog/changes/scheduler/001-shedlock-table.yaml

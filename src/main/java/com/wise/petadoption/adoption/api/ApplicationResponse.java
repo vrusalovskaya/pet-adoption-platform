@@ -2,7 +2,7 @@ package com.wise.petadoption.adoption.api;
 
 import com.wise.petadoption.adoption.common.ApplicationStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record ApplicationResponse(
         Long id,
@@ -11,7 +11,7 @@ public record ApplicationResponse(
         String message,
         ApplicationStatus status,
         String decisionComment,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

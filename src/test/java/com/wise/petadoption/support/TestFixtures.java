@@ -7,21 +7,23 @@ import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Gender;
 import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.animal.domain.Animal;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
+import com.wise.petadoption.animal.domain.UpdateAnimalCommand;
 import com.wise.petadoption.animal.persistence.AnimalEntity;
 import com.wise.petadoption.security.domain.SecurityUser;
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import com.wise.petadoption.shelter.persistence.ShelterEntity;
 import com.wise.petadoption.user.common.Role;
 import com.wise.petadoption.user.domain.User;
 import com.wise.petadoption.user.persistence.UserEntity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public final class TestFixtures {
 
-    public static final LocalDateTime NOW = LocalDateTime.of(2026, 1, 1, 12, 0);
+    public static final Instant NOW = Instant.parse("2026-01-01T12:00:00.00Z");
 
     private TestFixtures() {
     }
@@ -66,8 +68,13 @@ public final class TestFixtures {
                 "shelter@example.com", "+15557654321", "A cozy shelter", false, NOW);
     }
 
-    public static ModifyShelterCommand modifyShelterCommand(Long id) {
-        return new ModifyShelterCommand(id, "Happy Tails", "Springfield", "1 Main St",
+    public static CreateShelterCommand createShelterCommand() {
+        return new CreateShelterCommand("Happy Tails", "Springfield", "1 Main St",
+                "shelter@example.com", "+15557654321", "A cozy shelter");
+    }
+
+    public static UpdateShelterCommand updateShelterCommand(Long id) {
+        return new UpdateShelterCommand(id, "Happy Tails", "Springfield", "1 Main St",
                 "shelter@example.com", "+15557654321", "A cozy shelter");
     }
 
@@ -91,8 +98,13 @@ public final class TestFixtures {
                 Gender.MALE, "Good boy", status, null, NOW);
     }
 
-    public static ModifyAnimalCommand modifyAnimalCommand(Long id, Long shelterId) {
-        return new ModifyAnimalCommand(id, shelterId, "Rex", Species.DOG, "Labrador",
+    public static CreateAnimalCommand createAnimalCommand(Long shelterId) {
+        return new CreateAnimalCommand(shelterId, "Rex", Species.DOG, "Labrador",
+                2020, Gender.MALE, "Good boy");
+    }
+
+    public static UpdateAnimalCommand updateAnimalCommand(Long id, Long shelterId) {
+        return new UpdateAnimalCommand(id, shelterId, "Rex", Species.DOG, "Labrador",
                 2020, Gender.MALE, "Good boy");
     }
 

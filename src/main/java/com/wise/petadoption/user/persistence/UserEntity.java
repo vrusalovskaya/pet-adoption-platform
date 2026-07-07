@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(schema = "users", name = "users")
@@ -40,5 +40,5 @@ public class UserEntity {
     private Role role;
 
     @Column(nullable = false, updatable = false, insertable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

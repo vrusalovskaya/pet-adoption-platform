@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
             validateEmail(command.email());
         }
 
-        updateEntityFields(command, userEntity);
+        entityMapper.updateEntity(command, userEntity);
         return entityMapper.toModel(userEntity);
     }
 
@@ -94,13 +94,6 @@ public class UserServiceImpl implements UserService {
         entityManager.flush();
         entityManager.refresh(saved);
         return saved;
-    }
-
-    private void updateEntityFields(UpdateProfileCommand command, UserEntity userEntity) {
-        userEntity.setEmail(command.email());
-        userEntity.setFirstName(command.firstName());
-        userEntity.setLastName(command.lastName());
-        userEntity.setPhone(command.phone());
     }
 
     private void validatePassword(ChangePasswordCommand command, String currentPasswordHash) {

@@ -1,6 +1,7 @@
 package com.wise.petadoption.shelter.service;
 
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,9 +11,9 @@ public interface ShelterService {
 
     Shelter get(long id);
 
-    Shelter create(ModifyShelterCommand shelter);
+    Shelter create(CreateShelterCommand shelter);
 
-    Shelter update(ModifyShelterCommand shelter);
+    Shelter update(UpdateShelterCommand shelter);
 
     Shelter verify(Long id);
 

@@ -17,3 +17,6 @@ databaseChangeLog:
 
         - sql:
             sql: CREATE SCHEMA IF NOT EXISTS auth;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS scheduler;

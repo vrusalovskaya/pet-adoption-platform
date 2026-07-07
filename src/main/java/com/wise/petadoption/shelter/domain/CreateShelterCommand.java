@@ -1,7 +1,6 @@
 package com.wise.petadoption.shelter.domain;
 
-public record ModifyShelterCommand(
-        Long id,
+public record CreateShelterCommand(
         String name,
         String city,
         String address,

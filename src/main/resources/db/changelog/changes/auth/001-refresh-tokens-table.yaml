@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 004-create-refresh-tokens-table
+      id: 001-refresh-tokens-table
       author: victoria
 
       changes:
@@ -28,7 +28,7 @@ databaseChangeLog:
 
               - column:
                   name: expires_at
-                  type: TIMESTAMP
+                  type: TIMESTAMP WITH TIME ZONE
                   constraints:
                     nullable: false
 

@@ -8,9 +8,9 @@ import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Gender;
 import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.animal.domain.Animal;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
 import com.wise.petadoption.animal.service.AnimalService;
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import com.wise.petadoption.shelter.service.ShelterService;
 import com.wise.petadoption.support.AbstractFullStackIT;
@@ -52,8 +52,8 @@ class ServiceLayerIT extends AbstractFullStackIT {
 
     @Test
     void create_NewShelter_PersistsWithGeneratedIdAndTimestamp() {
-        Shelter created = shelterService.create(new ModifyShelterCommand(
-                null, "IT Shelter", "ITCity", "1 Main St",
+        Shelter created = shelterService.create(new CreateShelterCommand(
+                "IT Shelter", "ITCity", "1 Main St",
                 "it-shelter@example.com", "+15557654321", "desc"));
 
         assertThat(created.id()).isNotNull();
@@ -63,12 +63,12 @@ class ServiceLayerIT extends AbstractFullStackIT {
 
     @Test
     void create_NewAnimal_DefaultsToAvailableStatus() {
-        Shelter shelter = shelterService.create(new ModifyShelterCommand(
-                null, "Animal Shelter", "ITCity", "1 Main St",
+        Shelter shelter = shelterService.create(new CreateShelterCommand(
+                "Animal Shelter", "ITCity", "1 Main St",
                 "animal-shelter@example.com", "+15557654321", "desc"));
 
-        Animal created = animalService.create(new ModifyAnimalCommand(
-                null, shelter.id(), "Rex", Species.DOG, "Labrador", 2020, Gender.MALE, "Good boy"));
+        Animal created = animalService.create(new CreateAnimalCommand(
+                shelter.id(), "Rex", Species.DOG, "Labrador", 2020, Gender.MALE, "Good boy"));
 
         assertThat(created.id()).isNotNull();
         assertThat(created.status()).isEqualTo(AnimalStatus.AVAILABLE);
@@ -77,11 +77,11 @@ class ServiceLayerIT extends AbstractFullStackIT {
 
     @Test
     void approve_PendingApplication_ApprovesAndReservesAnimal() {
-        Shelter shelter = shelterService.create(new ModifyShelterCommand(
-                null, "Approve Shelter", "ITCity", "1 Main St",
+        Shelter shelter = shelterService.create(new CreateShelterCommand(
+                "Approve Shelter", "ITCity", "1 Main St",
                 "approve-shelter@example.com", "+15557654321", "desc"));
-        Animal animal = animalService.create(new ModifyAnimalCommand(
-                null, shelter.id(), "Buddy", Species.DOG, "Beagle", 2021, Gender.MALE, "Friendly"));
+        Animal animal = animalService.create(new CreateAnimalCommand(
+                shelter.id(), "Buddy", Species.DOG, "Beagle", 2021, Gender.MALE, "Friendly"));
         Application application = applicationService.create(
                 new CreateApplicationCommand(animal.id(), 1L, "I would love to adopt Buddy"));
 

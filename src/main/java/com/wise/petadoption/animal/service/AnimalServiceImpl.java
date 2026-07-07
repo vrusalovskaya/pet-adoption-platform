@@ -3,7 +3,8 @@ package com.wise.petadoption.animal.service;
 import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.animal.domain.Animal;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
+import com.wise.petadoption.animal.domain.UpdateAnimalCommand;
 import com.wise.petadoption.animal.exception.AnimalNotAvailableException;
 import com.wise.petadoption.animal.exception.AnimalNotFoundException;
 import com.wise.petadoption.animal.exception.NotValidAnimalStatusTransitionException;
@@ -71,7 +72,7 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     @Transactional
-    public Animal create(ModifyAnimalCommand command) {
+    public Animal create(CreateAnimalCommand command) {
         AnimalEntity animalEntity = entityMapper.toEntity(command);
 
         ShelterEntity shelterEntity = getShelterEntityById(command.shelterId());
@@ -85,11 +86,12 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     @Transactional
-    public Animal update(ModifyAnimalCommand command) {
+    public Animal update(UpdateAnimalCommand command) {
         AnimalEntity loadedEntity = getEntityById(command.id());
         ShelterEntity shelterEntity = getShelterEntityById(command.shelterId());
 
-        updateEntityFields(command, loadedEntity, shelterEntity);
+        entityMapper.updateEntity(command, loadedEntity);
+        loadedEntity.setShelterEntity(shelterEntity);
 
         return entityMapper.toModel(loadedEntity);
     }
@@ -144,18 +146,6 @@ public class AnimalServiceImpl implements AnimalService {
         entityManager.flush();
         entityManager.refresh(saved);
         return saved;
-    }
-
-    private void updateEntityFields(ModifyAnimalCommand command,
-                                    AnimalEntity loadedEntity,
-                                    ShelterEntity shelterEntity) {
-        loadedEntity.setShelterEntity(shelterEntity);
-        loadedEntity.setName(command.name());
-        loadedEntity.setSpecies(command.species());
-        loadedEntity.setBreed(command.breed());
-        loadedEntity.setBirthYear(command.birthYear());
-        loadedEntity.setGender(command.gender());
-        loadedEntity.setDescription(command.description());
     }
 
     private void validateStatusTransition(AnimalStatus previousStatus, AnimalStatus newStatus) {

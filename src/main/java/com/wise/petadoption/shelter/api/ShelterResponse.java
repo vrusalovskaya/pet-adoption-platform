@@ -1,8 +1,8 @@
 package com.wise.petadoption.shelter.api;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-public record ShelterResponse (
+public record ShelterResponse(
         Long id,
         String name,
         String city,
@@ -11,6 +11,6 @@ public record ShelterResponse (
         String contactPhone,
         String description,
         boolean verified,
-        LocalDateTime createdAt
+        Instant createdAt
 ) {
 }

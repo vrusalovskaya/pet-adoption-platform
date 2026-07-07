@@ -6,7 +6,8 @@ import com.wise.petadoption.animal.api.UpdateAnimalStatusRequest;
 import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Species;
 import com.wise.petadoption.animal.domain.Animal;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
+import com.wise.petadoption.animal.domain.UpdateAnimalCommand;
 import com.wise.petadoption.animal.mapper.AnimalResponseMapper;
 import com.wise.petadoption.animal.service.AnimalService;
 import jakarta.validation.Valid;
@@ -53,7 +54,7 @@ public class AnimalController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AnimalResponse> create(@Valid @RequestBody AnimalRequest request) {
-        ModifyAnimalCommand command = toCommand(null, request);
+        CreateAnimalCommand command = toCommand(request);
 
         Animal animal = animalService.create(command);
         AnimalResponse animalResponse = responseMapper.toResponse(animal);
@@ -65,7 +66,7 @@ public class AnimalController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AnimalResponse> update(@PathVariable Long id, @Valid @RequestBody AnimalRequest request) {
-        ModifyAnimalCommand command = toCommand(id, request);
+        UpdateAnimalCommand command = toCommand(id, request);
 
         Animal updatedAnimal = animalService.update(command);
         AnimalResponse animalResponse = responseMapper.toResponse(updatedAnimal);
@@ -88,8 +89,14 @@ public class AnimalController {
         return ResponseEntity.noContent().build();
     }
 
-    private static ModifyAnimalCommand toCommand(Long id, AnimalRequest request) {
-        return new ModifyAnimalCommand(
+    private static CreateAnimalCommand toCommand(AnimalRequest request) {
+        return new CreateAnimalCommand(
+                request.shelterId(), request.name(), request.species(), request.breed(), request.birthYear(),
+                request.gender(), request.description());
+    }
+
+    private static UpdateAnimalCommand toCommand(Long id, AnimalRequest request) {
+        return new UpdateAnimalCommand(
                 id, request.shelterId(), request.name(), request.species(), request.breed(), request.birthYear(),
                 request.gender(), request.description());
     }

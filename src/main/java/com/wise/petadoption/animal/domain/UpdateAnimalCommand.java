@@ -3,7 +3,7 @@ package com.wise.petadoption.animal.domain;
 import com.wise.petadoption.animal.common.Gender;
 import com.wise.petadoption.animal.common.Species;
 
-public record ModifyAnimalCommand(
+public record UpdateAnimalCommand(
         Long id,
         Long shelterId,
         String name,

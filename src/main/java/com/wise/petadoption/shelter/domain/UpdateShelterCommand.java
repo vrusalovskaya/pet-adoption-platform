@@ -1,16 +1,12 @@
 package com.wise.petadoption.shelter.domain;
 
-import java.time.Instant;
-
-public record Shelter(
+public record UpdateShelterCommand(
         Long id,
         String name,
         String city,
         String address,
         String contactEmail,
         String contactPhone,
-        String description,
-        boolean verified,
-        Instant createdAt
+        String description
 ) {
 }

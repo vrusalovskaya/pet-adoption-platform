@@ -4,7 +4,8 @@ import com.wise.petadoption.animal.api.AnimalResponse;
 import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Gender;
 import com.wise.petadoption.animal.common.Species;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
+import com.wise.petadoption.animal.domain.UpdateAnimalCommand;
 import com.wise.petadoption.animal.mapper.AnimalResponseMapper;
 import com.wise.petadoption.animal.service.AnimalService;
 import com.wise.petadoption.security.domain.SecurityUser;
@@ -77,7 +78,7 @@ class AnimalControllerTest {
 
     @Test
     void create_AdminUser_ReturnsCreatedWithLocation() throws Exception {
-        when(animalService.create(any(ModifyAnimalCommand.class)))
+        when(animalService.create(any(CreateAnimalCommand.class)))
                 .thenReturn(animal(1L, AnimalStatus.AVAILABLE, 7L));
         when(responseMapper.toResponse(any())).thenReturn(animalResponse());
 
@@ -115,7 +116,7 @@ class AnimalControllerTest {
 
     @Test
     void update_AdminUser_ReturnsOk() throws Exception {
-        when(animalService.update(any(ModifyAnimalCommand.class)))
+        when(animalService.update(any(UpdateAnimalCommand.class)))
                 .thenReturn(animal(1L, AnimalStatus.AVAILABLE, 7L));
         when(responseMapper.toResponse(any())).thenReturn(animalResponse());
 

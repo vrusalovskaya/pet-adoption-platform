@@ -1,6 +1,7 @@
 package com.wise.petadoption.shelter.service;
 
-import com.wise.petadoption.shelter.domain.ModifyShelterCommand;
+import com.wise.petadoption.shelter.domain.CreateShelterCommand;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
 import com.wise.petadoption.shelter.exception.ShelterNotFoundException;
 import com.wise.petadoption.shelter.mapper.ShelterEntityMapper;
@@ -40,7 +41,7 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     @Transactional
-    public Shelter create(ModifyShelterCommand command) {
+    public Shelter create(CreateShelterCommand command) {
         ShelterEntity shelterEntity = entityMapper.toEntity(command);
         ShelterEntity saved = saveAndRefresh(shelterEntity);
         return entityMapper.toModel(saved);
@@ -48,9 +49,9 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     @Transactional
-    public Shelter update(ModifyShelterCommand command) {
+    public Shelter update(UpdateShelterCommand command) {
         ShelterEntity loadedEntity = getEntityById(command.id());
-        updateEntityFields(command, loadedEntity);
+        entityMapper.updateEntity(command, loadedEntity);
         return entityMapper.toModel(loadedEntity);
     }
 
@@ -84,14 +85,5 @@ public class ShelterServiceImpl implements ShelterService {
         entityManager.flush();
         entityManager.refresh(saved);
         return saved;
-    }
-
-    private void updateEntityFields(ModifyShelterCommand command, ShelterEntity loadedEntity) {
-        loadedEntity.setName(command.name());
-        loadedEntity.setCity(command.city());
-        loadedEntity.setAddress(command.address());
-        loadedEntity.setContactEmail(command.contactEmail());
-        loadedEntity.setContactPhone(command.contactPhone());
-        loadedEntity.setDescription(command.description());
     }
 }

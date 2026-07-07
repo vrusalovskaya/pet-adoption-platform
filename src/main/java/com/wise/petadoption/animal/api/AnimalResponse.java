@@ -4,7 +4,8 @@ import com.wise.petadoption.animal.common.AnimalStatus;
 import com.wise.petadoption.animal.common.Gender;
 import com.wise.petadoption.animal.common.Species;
 
-import java.time.LocalDateTime;
+import java.net.URI;
+import java.time.Instant;
 
 public record AnimalResponse(
         Long id,
@@ -16,7 +17,7 @@ public record AnimalResponse(
         Gender gender,
         String description,
         AnimalStatus status,
-        PhotoMetadataResponse photoMetadata,
-        LocalDateTime createdAt
+        URI photoUrl,
+        Instant createdAt
 ) {
 }

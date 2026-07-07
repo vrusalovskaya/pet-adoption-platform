@@ -1,7 +1,7 @@
 package com.wise.petadoption.animal.service;
 
 import com.wise.petadoption.animal.common.AnimalStatus;
-import com.wise.petadoption.animal.domain.ModifyAnimalCommand;
+import com.wise.petadoption.animal.domain.CreateAnimalCommand;
 import com.wise.petadoption.animal.exception.AnimalNotAvailableException;
 import com.wise.petadoption.animal.exception.AnimalNotFoundException;
 import com.wise.petadoption.animal.exception.NotValidAnimalStatusTransitionException;
@@ -53,7 +53,7 @@ class AnimalServiceImplTest {
 
     @Test
     void create_ValidCommand_AttachesShelterAndSetsAvailableStatus() {
-        ModifyAnimalCommand command = modifyAnimalCommand(null, 7L);
+        CreateAnimalCommand command = createAnimalCommand(7L);
         AnimalEntity mapped = animalEntity(null, null, null);
         ShelterEntity shelter = shelterEntity(7L);
         AnimalEntity saved = animalEntity(1L, AnimalStatus.AVAILABLE, shelter);
@@ -70,7 +70,7 @@ class AnimalServiceImplTest {
 
     @Test
     void create_UnknownShelter_ThrowsShelterNotFoundException() {
-        ModifyAnimalCommand command = modifyAnimalCommand(null, 7L);
+        CreateAnimalCommand command = createAnimalCommand(7L);
         when(entityMapper.toEntity(command)).thenReturn(animalEntity(null, null, null));
         when(shelterRepository.findById(7L)).thenReturn(Optional.empty());
 
@@ -83,7 +83,7 @@ class AnimalServiceImplTest {
     void update_UnknownAnimal_ThrowsAnimalNotFoundException() {
         when(animalRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> animalService.update(modifyAnimalCommand(99L, 7L)))
+        assertThatThrownBy(() -> animalService.update(updateAnimalCommand(99L, 7L)))
                 .isInstanceOf(AnimalNotFoundException.class);
     }
 
@@ -93,7 +93,7 @@ class AnimalServiceImplTest {
         when(animalRepository.findById(1L)).thenReturn(Optional.of(loaded));
         when(shelterRepository.findById(7L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> animalService.update(modifyAnimalCommand(1L, 7L)))
+        assertThatThrownBy(() -> animalService.update(updateAnimalCommand(1L, 7L)))
                 .isInstanceOf(ShelterNotFoundException.class);
     }
 
