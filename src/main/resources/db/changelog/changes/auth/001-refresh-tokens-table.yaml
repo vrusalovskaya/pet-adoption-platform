@@ -1,0 +1,69 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 001-refresh-tokens-table
+      author: victoria
+
+      changes:
+
+        - createTable:
+            schemaName: auth
+            tableName: refresh_tokens
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: token_hash
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            constraintName: fk_refresh_tokens_user
+            baseTableSchemaName: auth
+            baseTableName: refresh_tokens
+            baseColumnNames: user_id
+
+            referencedTableSchemaName: users
+            referencedTableName: users
+            referencedColumnNames: id
+
+            onDelete: CASCADE
+
+        - createIndex:
+            schemaName: auth
+            tableName: refresh_tokens
+            indexName: idx_refresh_tokens_user_id
+
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            schemaName: auth
+            tableName: refresh_tokens
+            indexName: idx_refresh_tokens_expires_at
+
+            columns:
+              - column:
+                  name: expires_at

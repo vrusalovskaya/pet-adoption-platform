@@ -1,95 +1,36 @@
-# =========================
-# IntelliJ IDEA
-# =========================
-.idea/
-*.iml
-*.iws
-out/
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# =========================
-# VS Code
-# =========================
-.vscode/
-
-# =========================
-# Eclipse
-# =========================
-.project
+### STS ###
+.apt_generated
 .classpath
-.settings/
-bin/
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# =========================
-# NetBeans
-# =========================
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-# =========================
-# Maven
-# =========================
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
-# =========================
-# Gradle
-# =========================
-.gradle/
 build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# =========================
-# Java
-# =========================
-*.class
-*.log
-*.ctxt
-*.jar
-*.war
-*.nar
-*.ear
-hs_err_pid*
-replay_pid*
+### VS Code ###
+.vscode/
 
-# =========================
-# Spring Boot
-# =========================
-spring.log
-
-# =========================
-# Application Properties
-# =========================
-
-# Local overrides
-application-local.properties
-application-dev.properties
-application-secrets.properties
-
-# Environment files
-.env
-.env.*
-
-# =========================
-# OS files
-# =========================
-.DS_Store
-Thumbs.db
-
-# =========================
-# Logs
-# =========================
-logs/
-*.log
-
-# =========================
-# Temporary files
-# =========================
-*.tmp
-*.temp
-
-# =========================
-# Generated files
-# =========================
-generated/
+### Generated files ###
+data/

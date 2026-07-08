@@ -1,0 +1,33 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 005-catalog-reset-shelters-sequence
+      author: victoria
+
+      changes:
+
+        - sql:
+            sql: |
+              SELECT setval(
+                  'catalog.shelters_id_seq',
+                  (
+                      SELECT COALESCE(MAX(id), 1)
+                      FROM catalog.shelters
+                  )
+              );
+
+  - changeSet:
+      id: 006-catalog-reset-animals-sequence
+      author: victoria
+
+      changes:
+
+        - sql:
+            sql: |
+              SELECT setval(
+                  'catalog.animals_id_seq',
+                  (
+                      SELECT COALESCE(MAX(id), 1)
+                      FROM catalog.animals
+                  )
+              );

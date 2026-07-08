@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 000-create-schemas
+      author: victoria
+
+      changes:
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS users;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS catalog;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS adoption;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS auth;
+
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS scheduler;

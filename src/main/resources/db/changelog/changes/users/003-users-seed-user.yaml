@@ -1,0 +1,36 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 003-users-seed-user
+      author: victoria
+
+      changes:
+
+        - insert:
+            schemaName: users
+            tableName: users
+
+            columns:
+              - column:
+                  name: email
+                  value: user@petadoption.com
+
+              - column:
+                  name: password_hash
+                  value: $2a$10$JV6b2SQR/CpLxmdw8gAR1eHndpxDuaB0NHgs3dOJQza11cayWdtJO
+
+              - column:
+                  name: first_name
+                  value: Test
+
+              - column:
+                  name: last_name
+                  value: User
+
+              - column:
+                  name: role
+                  value: ROLE_USER
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP

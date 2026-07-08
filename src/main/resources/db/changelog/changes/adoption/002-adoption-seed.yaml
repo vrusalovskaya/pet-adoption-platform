@@ -1,0 +1,36 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 002-adoption-seed
+      author: victoria
+
+      changes:
+
+        - insert:
+            schemaName: adoption
+            tableName: adoption_applications
+
+            columns:
+              - column:
+                  name: animal_id
+                  valueNumeric: 1
+
+              - column:
+                  name: applicant_id
+                  valueNumeric: 1
+
+              - column:
+                  name: message
+                  value: I would love to adopt Luna
+
+              - column:
+                  name: status
+                  value: PENDING
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  valueComputed: CURRENT_TIMESTAMP

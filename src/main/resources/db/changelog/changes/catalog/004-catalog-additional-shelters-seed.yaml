@@ -1,0 +1,438 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 004-catalog-additional-shelters-seed
+      author: victoria
+
+      changes:
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+
+              - column:
+                  name: name
+                  value: Safe Paws Shelter
+
+              - column:
+                  name: city
+                  value: Warsaw
+
+              - column:
+                  name: address
+                  value: Pulawska 15
+
+              - column:
+                  name: contact_email
+                  value: contact@safepaws.com
+
+              - column:
+                  name: contact_phone
+                  value: +48111222333
+
+              - column:
+                  name: description
+                  value: Shelter for abandoned dogs and cats
+
+              - column:
+                  name: verified
+                  valueBoolean: true
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+
+              - column:
+                  name: name
+                  value: New Home Shelter
+
+              - column:
+                  name: city
+                  value: Krakow
+
+              - column:
+                  name: address
+                  value: Dluga 22
+
+              - column:
+                  name: contact_email
+                  value: hello@newhome.com
+
+              - column:
+                  name: contact_phone
+                  value: +48222333444
+
+              - column:
+                  name: description
+                  value: Small local animal shelter
+
+              - column:
+                  name: verified
+                  valueBoolean: false
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 4
+
+              - column:
+                  name: name
+                  value: Pet Rescue Center
+
+              - column:
+                  name: city
+                  value: Gdansk
+
+              - column:
+                  name: address
+                  value: Morska 8
+
+              - column:
+                  name: contact_email
+                  value: office@petrescue.com
+
+              - column:
+                  name: contact_phone
+                  value: +48333444555
+
+              - column:
+                  name: description
+                  value: Rescue center for injured animals
+
+              - column:
+                  name: verified
+                  valueBoolean: true
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 5
+
+              - column:
+                  name: name
+                  value: Warm Hearts Shelter
+
+              - column:
+                  name: city
+                  value: Krakow
+
+              - column:
+                  name: address
+                  value: Zielona 12
+
+              - column:
+                  name: contact_email
+                  value: info@warmhearts.com
+
+              - column:
+                  name: contact_phone
+                  value: +48444555666
+
+              - column:
+                  name: description
+                  value: Shelter specializing in cats
+
+              - column:
+                  name: verified
+                  valueBoolean: false
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: shelters
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 6
+
+              - column:
+                  name: name
+                  value: Animal Hope Shelter
+
+              - column:
+                  name: city
+                  value: Warsaw
+
+              - column:
+                  name: address
+                  value: Jana Pawla 55
+
+              - column:
+                  name: contact_email
+                  value: support@animalhope.com
+
+              - column:
+                  name: contact_phone
+                  value: +48555666777
+
+              - column:
+                  name: description
+                  value: Modern adoption center
+
+              - column:
+                  name: verified
+                  valueBoolean: true
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 2
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 2
+
+              - column:
+                  name: name
+                  value: Rocky
+
+              - column:
+                  name: species
+                  value: DOG
+
+              - column:
+                  name: breed
+                  value: Beagle
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2020
+
+              - column:
+                  name: gender
+                  value: MALE
+
+              - column:
+                  name: description
+                  value: Friendly and playful dog
+
+              - column:
+                  name: status
+                  value: AVAILABLE
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 3
+
+              - column:
+                  name: name
+                  value: Bella
+
+              - column:
+                  name: species
+                  value: CAT
+
+              - column:
+                  name: breed
+                  value: British Shorthair
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2022
+
+              - column:
+                  name: gender
+                  value: FEMALE
+
+              - column:
+                  name: description
+                  value: Calm indoor cat
+
+              - column:
+                  name: status
+                  value: AVAILABLE
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 4
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 4
+
+              - column:
+                  name: name
+                  value: Max
+
+              - column:
+                  name: species
+                  value: DOG
+
+              - column:
+                  name: breed
+                  value: German Shepherd
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2019
+
+              - column:
+                  name: gender
+                  value: MALE
+
+              - column:
+                  name: description
+                  value: Intelligent and loyal dog
+
+              - column:
+                  name: status
+                  value: ADOPTED
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 5
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 5
+
+              - column:
+                  name: name
+                  value: Milo
+
+              - column:
+                  name: species
+                  value: CAT
+
+              - column:
+                  name: breed
+                  value: Maine Coon
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2021
+
+              - column:
+                  name: gender
+                  value: MALE
+
+              - column:
+                  name: description
+                  value: Large and friendly cat
+
+              - column:
+                  name: status
+                  value: AVAILABLE
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
+
+        - insert:
+            schemaName: catalog
+            tableName: animals
+
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 6
+
+              - column:
+                  name: shelter_id
+                  valueNumeric: 6
+
+              - column:
+                  name: name
+                  value: Daisy
+
+              - column:
+                  name: species
+                  value: DOG
+
+              - column:
+                  name: breed
+                  value: Golden Retriever
+
+              - column:
+                  name: birth_year
+                  valueNumeric: 2023
+
+              - column:
+                  name: gender
+                  value: FEMALE
+
+              - column:
+                  name: description
+                  value: Young energetic puppy
+
+              - column:
+                  name: status
+                  value: AVAILABLE
+
+              - column:
+                  name: created_at
+                  valueComputed: CURRENT_TIMESTAMP
