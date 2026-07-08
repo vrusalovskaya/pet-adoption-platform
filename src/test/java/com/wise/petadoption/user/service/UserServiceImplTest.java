@@ -9,13 +9,14 @@ import com.wise.petadoption.user.exception.EmailAlreadyExistsException;
 import com.wise.petadoption.user.exception.InvalidPasswordException;
 import com.wise.petadoption.user.exception.UserNotFoundException;
 import com.wise.petadoption.user.mapper.UserEntityMapper;
+import com.wise.petadoption.user.mapper.UserEntityMapperImpl;
 import com.wise.petadoption.user.persistence.UserEntity;
 import com.wise.petadoption.user.persistence.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +34,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @Mock
-    private UserEntityMapper entityMapper;
+    private final UserEntityMapper entityMapper = new UserEntityMapperImpl();
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
@@ -42,11 +42,16 @@ class UserServiceImplTest {
     @Mock
     private EntityManager entityManager;
 
-    @InjectMocks
     private UserServiceImpl userService;
 
     @BeforeEach
-    void injectEntityManager() {
+    void setUp() {
+        userService = new UserServiceImpl(
+                entityMapper,
+                passwordEncoder,
+                userRepository
+        );
+
         ReflectionTestUtils.setField(userService, "entityManager", entityManager);
     }
 
@@ -54,19 +59,26 @@ class UserServiceImplTest {
     void create_NewEmail_PersistsUserWithEncodedPassword() {
         CreateUserCommand command = new CreateUserCommand("jane@example.com", "raw-password",
                 "Jane", "Doe", "+15551234567", Role.ROLE_USER);
-        UserEntity mappedEntity = userEntity(null, "jane@example.com", Role.ROLE_USER);
         UserEntity savedEntity = userEntity(1L, "jane@example.com", Role.ROLE_USER);
         User expected = user(1L, "jane@example.com", Role.ROLE_USER);
+
+        ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
+
         when(userRepository.existsByEmail("jane@example.com")).thenReturn(false);
-        when(entityMapper.toEntity(command)).thenReturn(mappedEntity);
         when(passwordEncoder.encode("raw-password")).thenReturn("encoded-password");
-        when(userRepository.save(mappedEntity)).thenReturn(savedEntity);
-        when(entityMapper.toModel(savedEntity)).thenReturn(expected);
+        when(userRepository.save(any(UserEntity.class))).thenReturn(savedEntity);
 
         User result = userService.create(command);
 
+        verify(userRepository).save(captor.capture());
+
+        UserEntity entity = captor.getValue();
+
+        assertThat(entity.getEmail()).isEqualTo("jane@example.com");
+        assertThat(entity.getPasswordHash()).isEqualTo("encoded-password");
+        assertThat(entity.getFirstName()).isEqualTo("Jane");
+
         assertThat(result).isEqualTo(expected);
-        assertThat(mappedEntity.getPasswordHash()).isEqualTo("encoded-password");
     }
 
     @Test
@@ -85,9 +97,7 @@ class UserServiceImplTest {
         UserEntity entity = userEntity(1L, "jane@example.com", Role.ROLE_USER);
         UpdateProfileCommand command = new UpdateProfileCommand(1L, "jane@example.com",
                 "Janet", "Doe", "+15550000000");
-        User expected = user(1L, "jane@example.com", Role.ROLE_USER);
         when(userRepository.findById(1L)).thenReturn(Optional.of(entity));
-        when(entityMapper.toModel(entity)).thenReturn(expected);
 
         userService.updateProfile(command);
 
@@ -102,7 +112,6 @@ class UserServiceImplTest {
                 "Jane", "Doe", "+15550000000");
         when(userRepository.findById(1L)).thenReturn(Optional.of(entity));
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
-        when(entityMapper.toModel(entity)).thenReturn(user(1L, "new@example.com", Role.ROLE_USER));
 
         userService.updateProfile(command);
 
@@ -178,7 +187,6 @@ class UserServiceImplTest {
         UserEntity entity = userEntity(1L, "jane@example.com", Role.ROLE_USER);
         User expected = user(1L, "jane@example.com", Role.ROLE_USER);
         when(userRepository.findByEmail("jane@example.com")).thenReturn(Optional.of(entity));
-        when(entityMapper.toModel(entity)).thenReturn(expected);
 
         assertThat(userService.findByEmail("jane@example.com")).isEqualTo(expected);
     }

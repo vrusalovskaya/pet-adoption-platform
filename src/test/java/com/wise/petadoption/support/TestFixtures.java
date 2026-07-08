@@ -12,8 +12,8 @@ import com.wise.petadoption.animal.domain.UpdateAnimalCommand;
 import com.wise.petadoption.animal.persistence.AnimalEntity;
 import com.wise.petadoption.security.domain.SecurityUser;
 import com.wise.petadoption.shelter.domain.CreateShelterCommand;
-import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.domain.Shelter;
+import com.wise.petadoption.shelter.domain.UpdateShelterCommand;
 import com.wise.petadoption.shelter.persistence.ShelterEntity;
 import com.wise.petadoption.user.common.Role;
 import com.wise.petadoption.user.domain.User;
@@ -106,6 +106,14 @@ public final class TestFixtures {
     public static UpdateAnimalCommand updateAnimalCommand(Long id, Long shelterId) {
         return new UpdateAnimalCommand(id, shelterId, "Rex", Species.DOG, "Labrador",
                 2020, Gender.MALE, "Good boy");
+    }
+
+    public static ApplicationEntity createApplicationEntity(Long animalId, Long applicantId, String message) {
+        ApplicationEntity entity = new ApplicationEntity();
+        entity.setAnimalId(animalId);
+        entity.setApplicantId(applicantId);
+        entity.setMessage(message);
+        return entity;
     }
 
     public static ApplicationEntity applicationEntity(Long id, Long animalId, Long applicantId,

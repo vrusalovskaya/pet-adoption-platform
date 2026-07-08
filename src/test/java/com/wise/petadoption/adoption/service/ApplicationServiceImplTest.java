@@ -23,8 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
-import static com.wise.petadoption.support.TestFixtures.application;
-import static com.wise.petadoption.support.TestFixtures.applicationEntity;
+import static com.wise.petadoption.support.TestFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,7 +53,9 @@ class ApplicationServiceImplTest {
     @Test
     void create_ValidCommand_PersistsApplicationWithPendingStatus() {
         CreateApplicationCommand command = new CreateApplicationCommand(5L, 1L, "Please");
+        ApplicationEntity applicationEntity = createApplicationEntity(5L, 1L, "Please");
         ApplicationEntity saved = applicationEntity(10L, 5L, 1L, ApplicationStatus.PENDING);
+        when(entityMapper.toEntity(command)).thenReturn(applicationEntity);
         when(applicationRepository.save(any(ApplicationEntity.class))).thenReturn(saved);
         when(entityMapper.toModel(saved)).thenReturn(application(10L, 5L, 1L, ApplicationStatus.PENDING));
 
